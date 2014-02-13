@@ -68,11 +68,11 @@ function buildCtor(fallback) {
 }
 
 
-exports.create = function (app, fallbackLocale) {
+exports.create = function (app, config) {
     var res;
 
-    res = resolver.create({ root: app.get('views'), ext: app.get('view engine'), fallback: translator.fallbackLocale });
-    app.set('view', buildCtor(translator.fallbackLocale));
+    res = resolver.create({ root: app.get('views'), ext: app.get('view engine'), fallback: config.fallbackLocale });
+    app.set('view', buildCtor(config.fallbackLocale));
 
     return function onLoad(name, context, callback) {
         var locals, view;

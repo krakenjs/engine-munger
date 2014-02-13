@@ -1,33 +1,38 @@
 'use strict';
 var views = require('./view'),
     util = require('./lib/util'),
-    dustjs = require('dustjs-linkedin');
+    dustjs = require('dustjs-linkedin'),
+    engine = require('adaro');
 
 
 function wrapEngine(config, engine) {
     var spclizr, module;
     if (config.specialization) {
         module = util.tryRequire('karka');
-        spclizr = module && module.create(config);
+        spclizr = module && module.create(config.specialization);
+        return function(file, options, callback) {
+            //generate the specialization map
+
+            options._specialization =  spclizr && spclizr.specializer.resolveAll(options);
+            engine.apply(null, arguments);
+        };
+    } else {
+        return engine;
     }
-    return function(file, options, callback) {
-        //generate the specialization map
-        options._specialization =  spclizr && spclizr.resolveAll(options);
-        engine.apply(null, arguments);
-    };
 }
 
 function wrapDustOnLoad(app, ext, i18n) {
     var specialization,
         mappedName,
-        fallbackLocale;
+        config = {};
     if (i18n) {
-        fallbackLocale = i18n.fallback || i18n.fallbackLocale;
+        config.fallbackLocale = i18n.fallback || i18n.fallbackLocale;
     }
+    config.ext = ext;
+    config.baseTemplatePath = app.get('views');
 
-    var onLoad = views[ext].create(app, fallbackLocale);
-
-    dustjs.onLoad = function onLoad (name, context, cb) {
+    var onLoad = (i18n) ? views[ext].create(app, config) : dustjs.onLoad;
+    dustjs.onLoad = function (name, context, cb) {
         specialization = (typeof context.get === 'function' && context.get('_specialization')) || context._specialization;
         mappedName = (specialization && specialization[name] || name);
         onLoad(mappedName, context, function(err, data) {
@@ -42,13 +47,31 @@ function wrapDustOnLoad(app, ext, i18n) {
 }
 
 exports.dust = function(app, config, renderer) {
-    var ext = (config.i18n && app.get('view engine') === 'dust')? 'js': ext;
-    wrapDustOnLoad(app, ext, config.i18n);
+    var current, settings;
+
+    if(!config.specialization && !config.i18n) {
+        return renderer;
+    }
+
+    wrapDustOnLoad(app, 'dust', config.i18n);
+
+    // Disabling cache
+    // since we add our own caching layer below. (Clone it first so we don't muck with the original object.)
+    current = app.engines['.dust'];
+    settings = (current && current.settings) || {};
+    settings.cache = false;
+    // For i18n we silently switch to the JS engine for all requests, passing config
+    renderer = config.i18n ? engine.js(settings): engine.dust(settings);
+
+    console.info('***** renderer:' + renderer);
+
     return wrapEngine(config, renderer);
 };
 
 exports.js = function(app, config, renderer) {
-    wrapDustOnLoad(app, 'js',config.i18n);
+    if(config.specialization || config.i18n){
+        wrapDustOnLoad(app, 'js',config.i18n);
+    }
     return wrapEngine(config, renderer);
 };
 

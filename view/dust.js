@@ -17,24 +17,35 @@
 \*───────────────────────────────────────────────────────────────────────────*/
 'use strict';
 
-var dustjs = require('dustjs-linkedin'),
-    fs = require('fs'),
-    localizr = require('localizr');
+var fs = require('fs'),
+    localizr = require('localizr'),
+    dustjs = require('dustjs-linkedin'),
+    resolver = require('../lib/resolver');
 
 
-exports.create = function () {
+//config has
+ //fallbackLocale
+ //baseTemplatePath
+
+exports.create = function (app, config) {
+    var res = resolver.create({ root: config.baseTemplatePath, ext: config.ext , fallback: config.fallbackLocale });
     return function onLoad(name, context, callback) {
 
-        var out, options;
+        var out, options, global, locals, locality;
+
+        global = context.global;
+        locals = context.get('context');
+        locality = locals && locals.locality;
+
         options = {
-            src: path.join(__dirname, 'templates', 'index.dust'),
-            props: path.join(__dirname, 'content', 'index.properties')
+            src: path.join(config.baseTemplatePath, name + '.dust'),
+            props: res.resolve(name, locality).file
         };
 
         out = concat({ encoding: 'string' }, function(data) {
             var compiledDust;
             try {
-                compiledDust = dustjs.compile(data, name);
+                //compiledDust = dustjs.compile(data, name);
                 callback(null, compiledDust);
             } catch (e) {
                 callback(e);
