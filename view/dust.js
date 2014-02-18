@@ -20,7 +20,9 @@
 var fs = require('fs'),
     localizr = require('localizr'),
     dustjs = require('dustjs-linkedin'),
-    resolver = require('../lib/resolver');
+    resolver = require('../lib/resolver'),
+    path = require('path'),
+    concat = require('concat-stream');
 
 
 //config has
@@ -28,7 +30,8 @@ var fs = require('fs'),
  //baseTemplatePath
 
 exports.create = function (app, config) {
-    var res = resolver.create({ root: config.baseTemplatePath, ext: config.ext , fallback: config.fallbackLocale });
+    console.info('config', config);
+    var res = resolver.create({ root: config.baseContentPath, ext: 'properties' , fallback: config.fallbackLocale });
     return function onLoad(name, context, callback) {
 
         var out, options, global, locals, locality;
@@ -38,23 +41,27 @@ exports.create = function (app, config) {
         locality = locals && locals.locality;
 
         options = {
-            src: path.join(config.baseTemplatePath, name + '.dust'),
-            props: res.resolve(name, locality).file
+            src: path.join(process.cwd() + '/' + config.baseTemplatePath, name + '.dust'),
+            props: process.cwd() + '/' + res.resolve(name, locality).file
         };
-
+        console.info('options:', options);
         out = concat({ encoding: 'string' }, function(data) {
             var compiledDust;
+            console.info('\n\n\n*****data', data);
             try {
-                //compiledDust = dustjs.compile(data, name);
+                compiledDust = dustjs.compile(data, name);
+                console.info('compiledDust', compiledDust);
                 callback(null, compiledDust);
             } catch (e) {
+                console.info('error', e);
                 callback(e);
             }
         });
 
         try {
-            localizr.createReadStream(options).pipe(fs.createWriteStream(out));
+            localizr.createReadStream(options).pipe(out);
         } catch (e) {
+            console.info('e', e);
             callback(e);
         }
     };

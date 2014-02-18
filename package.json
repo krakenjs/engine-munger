@@ -9,15 +9,18 @@
   },
   "dependencies": {
       "localizr": "git://github.com/totherik/localizr.git",
-      "graceful-fs": "~2.0.1"
+      "graceful-fs": "~2.0.1",
+      "concat-stream":"~1.4.1"
   },
   "devDependencies": {
     "tape": "~2.4.2",
-     "karka": "git://github.com/pvenkatakrishnan/karka.git"
+     "karka": "git://github.com/pvenkatakrishnan/karka.git",
+     "dustjs-linkedin": "~2.0.0",
+     "adaro":"~0.1.5"
   },
   "peerDependencies": {
     "dustjs-linkedin": "~2.0.0",
-    "adaro":"~1.0.1"
+    "adaro":"~0.1.5"
   },
   "scripts": {
     "test": "grunt test"

@@ -22,7 +22,7 @@ var dustjs = require('dustjs-linkedin'),
     };
 
 test('specializr', function (t) {
-    t.test('using munger when no specialization or internationalization enabled', function (t) {
+    /*t.test('using munger when no specialization or internationalization enabled', function (t) {
         var config = {
                 i18n: null,
                 specialization: null
@@ -36,7 +36,7 @@ test('specializr', function (t) {
             t.end();
         };
         engineMunger['dust'](app, config, renderer)('', {});
-    });
+    });*/
 
     t.test('using munger for generating engine wrappers -only specialization enabled', function (t) {
         var config = {
@@ -54,29 +54,24 @@ test('specializr', function (t) {
                 }
             },
             context = {'whoAmI': 'badGuy'},
-            renderer = function() {};
-        adaro.dust.value = function(settings) {
-            return function (file, context) {
-                dustjs.onLoad('jekyll', context, function(err, data) {
-                    t.equal(data, '\<div>I am the bad guy</div>');
-                    t.deepEqual(context,{'whoAmI': 'badGuy', '_specialization': {'jekyll':'hyde'}} );
-                });
-            }
-        },
+            renderer = function() {t.end();};
+
         dustjs.onLoad = function(name, context, cb) {
+            console.info('calle dinto onlaod');
             t.equal(name, 'hyde');
             cb(null, '\<div>I am the bad guy</div>');
+
         };
 
         engineMunger['dust'](app, config, renderer)('', context);
-        t.end();
+
     });
 
     /*t.test('using munger for generating engine wrappers - specialization/internationalization enabled for dust', function(t) {
         var config = {
                 "i18n": {
                     "fallback": "en-US",
-                    "contentPath": "path:./locales"
+                    "contentPath": "test/fixtures/properties"
                 },
                 specialization: {
                     jekyll: [
@@ -92,16 +87,25 @@ test('specializr', function (t) {
             },
             renderer = function (file, context) {
                 dustjs.onLoad('jekyll', context, function(err, data) {
-                    t.equal(data, '\<div>I am the bad guy</div>');
-                    t.deepEqual(context,{'whoAmI': 'badGuy', '_specialization': {'jekyll':'hyde'}} );
-
+                    console.info('data...',data);
+                    console.info(typeof data);
+                    t.deepEqual(data, function body_0(chk,ctx){return chk.write("<h1>Hello Hyde</h1>");});
+                    t.deepEqual(JSON.stringify(context),JSON.stringify({'whoAmI': 'badGuy', '_specialization': {'jekyll':'hyde'}}) );
                 });
             },
-            context = {'whoAmI': 'badGuy'};
-        dustjs.onLoad = function(name, context, cb) {
-            t.equal(name, 'hyde');
-            cb(null, '\<div>I am the bad guy</div>');
-        };
+            context = {
+                'whoAmI': 'badGuy',
+                'get' : function(val) {
+                    if (val === 'context') {
+                        return {
+                            locality:{
+                                locale: 'en_US',
+                                country: 'US',
+                                language: 'en'
+                            }
+                        }
+                    }
+                }};
         engineMunger['dust'](app, config, renderer)('', context);
         t.end();
 
