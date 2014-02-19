@@ -5,22 +5,28 @@ var views = require('./view'),
     engine = require('adaro'),
     cache = require('./lib/cache');
 
+//wrapEngine helps populate the context
+//with the specialization map before
+//dust.load is called
+//this helps load the right specialized templates
+//down the render work flow
 
 function wrapEngine(config, engine) {
     var spclizr, module;
+
     if (config.specialization) {
         module = util.tryRequire('karka');
         spclizr = module && module.create(config.specialization);
         return function(file, options, callback) {
             //generate the specialization map
-
-            options._specialization =  spclizr && spclizr.specializer.resolveAll(options);
+            options._specialization =  spclizr && spclizr.resolveAll(options);
             engine.apply(null, arguments);
         };
-    } else {
-        return engine;
     }
 }
+
+//wrapDustOnLoad makes sure every dust partial that is loaded
+// has the right specialization/localization applied on it
 
 function wrapDustOnLoad(app, ext, i18n) {
     var specialization,
@@ -34,7 +40,6 @@ function wrapDustOnLoad(app, ext, i18n) {
     config.ext = ext;
     config.baseTemplatePath = app.get('views');
 
-
     var onLoad = (i18n) ? views[ext].create(app, config) : dustjs.onLoad;
     //custom cache for all specialized or localized templates
     viewCache = cache.create(onLoad, config.fallbackLocale);
@@ -43,13 +48,12 @@ function wrapDustOnLoad(app, ext, i18n) {
         specialization = (typeof context.get === 'function' && context.get('_specialization')) || context._specialization;
         mappedName = (specialization && specialization[name] || name);
         onLoad(mappedName, context, function(err, data) {
-            console.info('called after caching:data:', data);
-            /*if (!err && mappedName !== name && typeof data === 'string') {
+            if (!err && mappedName !== name && typeof data === 'string') {
                 //this is a workaround, since adaro is not aware of the mapped name up the chain
                 //we find the dust.register line and replace the mappedName of template with original name
                 data = data.replace(mappedName, name);
-            }*/
-            cb(err, data);
+            }
+            cb(null, data);
         });
     };
 }
@@ -76,9 +80,11 @@ exports.dust = function(app, config, renderer) {
 };
 
 exports.js = function(app, config, renderer) {
+
+    var engine = (config.specialization) ? wrapEngine(config, renderer) : renderer;
     if(config.specialization || config.i18n){
-        wrapDustOnLoad(app, 'js',config.i18n);
+        wrapDustOnLoad(app, 'js', config.i18n);
     }
-    return wrapEngine(config, renderer);
+    return engine;
 };
 
