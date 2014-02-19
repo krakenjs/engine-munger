@@ -14,7 +14,7 @@
   },
   "devDependencies": {
     "tape": "~2.4.2",
-     "karka": "git://github.com/pvenkatakrishnan/karka.git",
+     "karka": "git://github.com/pvenkatakrishnan/karka.git#karka-without-context",
      "dustjs-linkedin": "~2.0.0",
      "adaro":"~0.1.5"
   },
