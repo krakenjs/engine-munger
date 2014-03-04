@@ -3,9 +3,11 @@ var views = require('./view'),
     util = require('./lib/util'),
     dustjs = require('dustjs-linkedin'),
     engine = require('adaro'),
-    cache = require('./lib/cache');
+    cache = require('./lib/cache'),
+    fs = require('fs'),
+    path = require('path');
 
-console.info('engine:', engine);
+
 //wrapEngine helps populate the context
 //with the specialization map before
 //dust.load is called
@@ -18,7 +20,7 @@ function wrapEngine(config, engine) {
     if (config.specialization) {
         module = util.tryRequire('karka');
         spclizr = module && module.create(config.specialization);
-        return function(file, options, callback) {
+        return function (file, options, callback) {
             //generate the specialization map
             options._specialization =  spclizr && spclizr.resolveAll(options);
             engine.apply(null, arguments);
@@ -39,18 +41,26 @@ function wrapDustOnLoad(app, ext, i18n) {
     if (i18n) {
         config.fallbackLocale = i18n.fallback || i18n.fallbackLocale;
         config.baseContentPath = i18n.contentPath;
+        config.ext = ext;
+        config.baseTemplatePath = app.get('views');
     }
-    config.ext = ext;
-    config.baseTemplatePath = app.get('views');
 
-    var onLoad = (i18n) ? views[ext].create(app, config) : dustjs.onLoad;
+    var onLoad = (i18n) ? views[ext].create(app, config) : function load(name, context, cb) {
+        var views, file;
+
+        views = app.get('views');
+        file = path.join(views, name + '.' + ext);
+        fs.readFile(file, 'utf8', function (err, data) {
+            cb.apply(undefined, arguments);
+        });
+    };
     //custom cache for all specialized or localized templates
     viewCache = cache.create(onLoad, config.fallbackLocale);
     onLoad = viewCache.get.bind(viewCache);
     dustjs.onLoad = function (name, context, cb) {
         specialization = (typeof context.get === 'function' && context.get('_specialization')) || context._specialization;
         mappedName = (specialization && specialization[name] || name);
-        onLoad(mappedName, context, function(err, data) {
+        onLoad(mappedName, context, function (err, data) {
             if (!err && mappedName !== name && typeof data === 'string') {
                 //this is a workaround, since adaro is not aware of the mapped name up the chain
                 //we find the dust.register line and replace the mappedName of template with original name
@@ -61,10 +71,10 @@ function wrapDustOnLoad(app, ext, i18n) {
     };
 }
 
-exports.dust = function(app, config, renderer) {
+exports.dust = function (app, config, renderer) {
     var current, settings;
 
-    if(!config.specialization && !config.i18n) {
+    if (!config.specialization && !config.i18n) {
         return renderer;
     }
 
@@ -81,10 +91,10 @@ exports.dust = function(app, config, renderer) {
     return wrapEngine(config, renderer);
 };
 
-exports.js = function(app, config, renderer) {
+exports.js = function (app, config, renderer) {
 
     var engine = (config.specialization) ? wrapEngine(config, renderer) : renderer;
-    if(config.specialization || config.i18n){
+    if (config.specialization || config.i18n) {
         wrapDustOnLoad(app, 'js', config.i18n);
     }
     return engine;

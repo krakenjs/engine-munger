@@ -20,7 +20,7 @@
 var fs = require('fs'),
     localizr = require('localizr'),
     dustjs = require('dustjs-linkedin'),
-    resolver = require('../lib/resolver'),
+    resolver = require('fileResolver'),
     path = require('path'),
     concat = require('concat-stream');
 
@@ -30,7 +30,7 @@ var fs = require('fs'),
 //baseTemplatePath
 
 exports.create = function (app, config) {
-    var res = resolver.create({ root: config.baseContentPath, ext: 'properties' , fallback: config.fallbackLocale });
+    var res = resolver.create({ root: config.baseContentPath, ext: 'properties', fallback: config.fallbackLocale });
     return function onLoad(name, context, callback) {
 
         var out, options, global, locals, locality, props;
@@ -45,7 +45,7 @@ exports.create = function (app, config) {
             props: props
         };
 
-        out = concat({ encoding: 'string' }, function(data) {
+        out = concat({ encoding: 'string' }, function (data) {
             var compiledDust;
             try {
                 compiledDust = dustjs.compile(data, name);

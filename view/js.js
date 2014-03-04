@@ -19,7 +19,7 @@
 
 var path = require('path'),
     fs = require('graceful-fs'),
-    resolver = require('../lib/resolver');
+    resolver = require('fileResolver');
 
 
 var proto = {
@@ -79,12 +79,10 @@ exports.create = function (app, config) {
 
         locals = context.get('context');
         view = res.resolve(name, locals && locals.locality);
-
         if (!view.file) {
             callback(new Error('Could not load template ' + name));
             return;
         }
-
         fs.readFile(view.file, 'utf8', callback);
     };
 };
