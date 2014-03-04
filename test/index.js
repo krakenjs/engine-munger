@@ -1,8 +1,9 @@
 'use strict';
 var dustjs = require('dustjs-linkedin'),
-    adaro = require('adaro'),
     test = require('tape'),
+    mockery = require('mockery'),
     engineMunger = require('../index'),
+    adaro,
     app = {
         get: function(val) {
             switch(val) {
@@ -17,17 +18,23 @@ var dustjs = require('dustjs-linkedin'),
         engines: {
             dust: function() {
 
+            },
+            js: function() {
+
             }
         }
     };
 
+
 test('specializr', function (t) {
-    /*t.test('using munger when no specialization or internationalization enabled', function (t) {
+
+   t.test('using munger when no specialization or internationalization enabled for dust engine', function (t) {
         var config = {
                 i18n: null,
                 specialization: null
             },
             renderer = function (file, context) {
+                t.equal(context._specialization, undefined);
                 dustjs.onLoad('jekyll', context);
             };
 
@@ -35,10 +42,10 @@ test('specializr', function (t) {
             t.equal(name, 'jekyll');
             t.end();
         };
-        engineMunger['dust'](app, config, renderer)('', {});
-    });*/
+        engineMunger['dust'](app, config, renderer)('test/fixtures/hyde', {});
+    });
 
-    t.test('using munger for generating engine wrappers -only specialization enabled', function (t) {
+    t.test('using munger when only specialization enabled for dust engine', function (t) {
         var config = {
                 i18n: null,
                 specialization: {
@@ -54,20 +61,54 @@ test('specializr', function (t) {
                 }
             },
             context = {'whoAmI': 'badGuy'},
-            renderer = function() {t.end();};
+            renderer = function (file, context) {
+                t.deepEqual(context._specialization, {'jekyll': 'hyde'});
+                dustjs.onLoad('jekyll', context);
+            };
 
         dustjs.onLoad = function(name, context, cb) {
-            console.info('calle dinto onlaod');
             t.equal(name, 'hyde');
-            cb(null, '\<div>I am the bad guy</div>');
-
+            t.end();
         };
 
-        engineMunger['dust'](app, config, renderer)('', context);
+        engineMunger['dust'](app, config, renderer)('test/fixtures/hyde', context);
 
     });
 
-    /*t.test('using munger for generating engine wrappers - specialization/internationalization enabled for dust', function(t) {
+
+    t.test('using munger when only internationalization is enabled for dust engine', function (t) {
+
+        var config = {
+                i18n: {
+                    "fallback": "en-US",
+                    "contentPath": "test/fixtures/properties"
+                },
+                specialization: null
+            },
+            context = {
+                get: function() {
+                    return {
+                        locality: 'es_US'
+                    }
+                }
+            };
+        doMockeryStuff(function renderer (file, context, cb) {
+            t.deepEqual(context._specialization, undefined);
+            dustjs.onLoad('jekyll', context, function(err, data){
+                var res = JSON.stringify('' + data);
+                t.equal(err, null);
+                t.equal(res, '\"function body_0(chk,ctx){return chk.write(\\\"<h1>Hola Jekyll</h1>\\\");}\"');
+                mockery.disable();
+                t.end();
+            });
+
+        });
+        engineMunger['dust'](app, config)('test/fixtures/templates/jekyll', context);
+
+    });
+
+
+    t.test('using munger when specialization/internationalization is enabled for dust engine', function(t) {
         var config = {
                 "i18n": {
                     "fallback": "en-US",
@@ -85,29 +126,42 @@ test('specializr', function (t) {
 
                 }
             },
-            renderer = function (file, context) {
-                dustjs.onLoad('jekyll', context, function(err, data) {
-                    console.info('data...',data);
-                    console.info(typeof data);
-                    t.deepEqual(data, function body_0(chk,ctx){return chk.write("<h1>Hello Hyde</h1>");});
-                    t.deepEqual(JSON.stringify(context),JSON.stringify({'whoAmI': 'badGuy', '_specialization': {'jekyll':'hyde'}}) );
-                });
-            },
             context = {
                 'whoAmI': 'badGuy',
-                'get' : function(val) {
-                    if (val === 'context') {
-                        return {
-                            locality:{
-                                locale: 'en_US',
-                                country: 'US',
-                                language: 'en'
-                            }
-                        }
+                get: function() {
+                    return {
+                        locality: 'es_US'
                     }
-                }};
-        engineMunger['dust'](app, config, renderer)('', context);
-        t.end();
+                }
+            };
+        doMockeryStuff(function renderer (file, context, cb) {
+            t.deepEqual(context._specialization, {jekyll: 'hyde'});
+            dustjs.onLoad('hyde', context, function(err, data) {
+                var res = JSON.stringify('' + data);
+                t.equal(err, null);
+                t.equal(res, '\"function body_0(chk,ctx){return chk.write(\\\"<h1>Hola Hyde</h1>\\\");}\"');
+                mockery.disable();
+                t.end();
+            });
 
-    });*/
+        });
+        engineMunger['dust'](app, config)('test/fixtures/templates/jekyll', context);
+    });
+
 });
+
+function doMockeryStuff(renderer) {
+    mockery.enable({
+        warnOnUnregistered: false,
+        useCleanCache: true
+    });
+    mockery.registerMock('adaro', {
+        js: function() {
+            return renderer;
+        }
+    });
+
+    adaro = require('adaro');
+    engineMunger = require('../index');
+    dustjs = require('dustjs-linkedin');
+}

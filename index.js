@@ -5,6 +5,7 @@ var views = require('./view'),
     engine = require('adaro'),
     cache = require('./lib/cache');
 
+console.info('engine:', engine);
 //wrapEngine helps populate the context
 //with the specialization map before
 //dust.load is called
@@ -22,6 +23,8 @@ function wrapEngine(config, engine) {
             options._specialization =  spclizr && spclizr.resolveAll(options);
             engine.apply(null, arguments);
         };
+    } else {
+        return engine;
     }
 }
 
@@ -73,7 +76,6 @@ exports.dust = function(app, config, renderer) {
     settings = (current && current.settings) || {};
     settings.cache = false;
     // For i18n we silently switch to the JS engine for all requests, passing config
-
     renderer = config.i18n ? engine.js(settings): renderer;
 
     return wrapEngine(config, renderer);

@@ -8,21 +8,26 @@
     "email": "pvenkatakrishnan@paypal.com"
   },
   "dependencies": {
-      "localizr": "git://github.com/totherik/localizr.git",
-      "graceful-fs": "~2.0.1",
-      "concat-stream":"~1.4.1"
+    "graceful-fs": "~2.0.1",
+    "concat-stream": "~1.4.1",
+    "karka": "git://github.com/pvenkatakrishnan/karka.git#karka-without-context",
+    "localizr": "git://github.com/totherik/localizr.git",
+    "fileResolver": "git://github.com/pvenkatakrishnan/fileResolver.git"
   },
   "devDependencies": {
     "tape": "~2.4.2",
-     "karka": "git://github.com/pvenkatakrishnan/karka.git#karka-without-context",
-     "dustjs-linkedin": "~2.0.0",
-     "adaro":"~0.1.5"
+    "adaro": "~0.1.5",
+    "istanbul": "~0.2.4",
+    "jshint": "~2.4.3",
+    "mockery": "~1.4.0"
   },
   "peerDependencies": {
     "dustjs-linkedin": "~2.0.0",
-    "adaro":"~0.1.5"
+    "adaro": "~0.1.5"
   },
   "scripts": {
-    "test": "grunt test"
+    "test": "tape test/*.js",
+    "cover": "istanbul cover tape -- test/*.js",
+    "lint": "jshint -c .jshintrc index.js lib/ view/"
   }
 }
