@@ -1,7 +1,7 @@
 {
   "name": "engine-munger",
   "version": "0.0.1",
-  "description": "An engine munger",
+  "description": "An engine munger for kraken", 
   "main": "index.js",
   "author": {
     "name": "Poornima Venkatakrishnan",
