@@ -1,13 +1,13 @@
 'use strict';
 var views = require('./view'),
     util = require('./lib/util'),
-    dustjs = require('dustjs-linkedin'),
     engine = require('adaro'),
+    dustjs = require('dustjs-linkedin'),
     cache = require('./lib/cache'),
     fs = require('fs'),
     path = require('path');
 
-
+console.info('engine', engine);
 //wrapEngine helps populate the context
 //with the specialization map before
 //dust.load is called
@@ -34,6 +34,7 @@ function wrapEngine(config, engine) {
 // has the right specialization/localization applied on it
 
 function wrapDustOnLoad(app, ext, i18n) {
+    console.info('calle dinto dust onload');
     var specialization,
         mappedName,
         config = {},
@@ -69,6 +70,9 @@ function wrapDustOnLoad(app, ext, i18n) {
             cb(null, data);
         });
     };
+
+    dustjs.poornima = 'iam here';
+    console.info('setting dustjs.onload', dustjs.onLoad);
 }
 
 exports.dust = function (app, config, renderer) {
@@ -92,11 +96,10 @@ exports.dust = function (app, config, renderer) {
 };
 
 exports.js = function (app, config, renderer) {
-
-    var engine = (config.specialization) ? wrapEngine(config, renderer) : renderer;
+    console.info('calle dinto engone munger js');
     if (config.specialization || config.i18n) {
         wrapDustOnLoad(app, 'js', config.i18n);
     }
-    return engine;
+    return (config.specialization) ? wrapEngine(config, renderer) : renderer;
 };
 
