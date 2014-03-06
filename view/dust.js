@@ -29,7 +29,7 @@ var fs = require('fs'),
 //fallbackLocale
 //baseTemplatePath
 
-exports.create = function (app, config) {
+exports.create = function (config) {
     var res = resolver.create({ root: config.baseContentPath, ext: 'properties', fallback: config.fallbackLocale });
     return function onLoad(name, context, callback) {
 

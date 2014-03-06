@@ -33,29 +33,29 @@ function wrapEngine(config, engine) {
 //wrapDustOnLoad makes sure every dust partial that is loaded
 // has the right specialization/localization applied on it
 
-function wrapDustOnLoad(app, ext, i18n) {
+function wrapDustOnLoad(ext, config) {
     var specialization,
         mappedName,
-        config = {},
+        conf = {},
         viewCache;
     if (i18n) {
-        config.fallbackLocale = i18n.fallback || i18n.fallbackLocale;
-        config.baseContentPath = i18n.contentPath;
-        config.ext = ext;
-        config.baseTemplatePath = app.get('views');
+        conf.fallbackLocale = config.i18n.fallback || config.i18n.fallbackLocale;
+        conf.baseContentPath = config.i18n.contentPath;
+        conf.ext = ext;
+        conf.baseTemplatePath = config.views;
     }
 
-    var onLoad = (i18n) ? views[ext].create(app, config) : function load(name, context, cb) {
+    var onLoad = (i18n) ? views[ext].create(config) : function load(name, context, cb) {
         var views, file;
 
-        views = app.get('views');
+        views = config.views;
         file = path.join(views, name + '.' + ext);
         fs.readFile(file, 'utf8', function (err, data) {
             cb.apply(undefined, arguments);
         });
     };
     //custom cache for all specialized or localized templates
-    viewCache = cache.create(onLoad, config.fallbackLocale);
+    viewCache = cache.create(onLoad, config.i18n.fallbackLocale);
     onLoad = viewCache.get.bind(viewCache);
     dustjs.onLoad = function (name, context, cb) {
         specialization = (typeof context.get === 'function' && context.get('_specialization')) || context._specialization;
@@ -71,31 +71,31 @@ function wrapDustOnLoad(app, ext, i18n) {
     };
 }
 
-exports.dust = function (app, config, renderer) {
-    var current, settings;
-
-    if (!config.specialization && !config.i18n) {
-        return renderer;
+exports.dust = function (config) {
+    var current,
+        settings =  config.settings || {},
+        renderer;
+    if (!(config.specialization || config.i18n)) {
+        return engine.dust(settings);
     }
 
-    wrapDustOnLoad(app, 'dust', config.i18n);
+    wrapDustOnLoad('dust', config.i18n);
 
     // Disabling cache
     // since we add our own caching layer below. (Clone it first so we don't muck with the original object.)
-    current = app.engines['.dust'];
-    settings = (current && current.settings) || {};
+
     settings.cache = false;
     // For i18n we silently switch to the JS engine for all requests, passing config
-    renderer = config.i18n ? engine.js(settings): renderer;
+    renderer = config.i18n ? engine.js(settings): engine.dust(settings);
 
     return wrapEngine(config, renderer);
 };
 
-exports.js = function (app, config, renderer) {
-
+exports.js = function (config) {
+    var renderer = engine.js(config.settings || {});
     var engine = (config.specialization) ? wrapEngine(config, renderer) : renderer;
     if (config.specialization || config.i18n) {
-        wrapDustOnLoad(app, 'js', config.i18n);
+        wrapDustOnLoad('js', config.i18n);
     }
     return engine;
 };

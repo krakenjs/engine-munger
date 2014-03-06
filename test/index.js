@@ -27,7 +27,7 @@ var dustjs = require('dustjs-linkedin'),
 
 test('engine-munger', function (t) {
 
-    appSetUp('js');
+   /* appSetUp('js');
     t.test('when no specialization or internationalization enabled for js engine', function (t) {
         var config = testData.none.config,
             renderer = function (file, context) {
@@ -92,9 +92,9 @@ test('engine-munger', function (t) {
 
     });
 
-
+*/
     t.test('when no specialization or internationalization enabled for dust engine', function (t) {
-        appSetUp('dust');
+
         var config = testData.none.config,
             renderer = function (file, context) {
                 t.equal(context._specialization, undefined);
@@ -183,6 +183,9 @@ function doMockeryStuff(renderer) {
     });
     mockery.registerMock('adaro', {
         js: function() {
+            return renderer;
+        },
+        dust: function() {
             return renderer;
         }
     });

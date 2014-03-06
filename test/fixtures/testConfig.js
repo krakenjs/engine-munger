@@ -2,7 +2,8 @@ module.exports = {
     'none': {
         config: {
             i18n: null,
-            specialization: null
+            specialization: null,
+            views: 'test/fixtures/templates'
         }
     },
     'onlySpcl': {
@@ -18,7 +19,8 @@ module.exports = {
                     }
                 ]
 
-            }
+            },
+            views: 'test/fixtures/templates'
         },
         'context': {
             'whoAmI': 'badGuy',
@@ -38,7 +40,8 @@ module.exports = {
             'i18n': {
                 'fallback': 'en-US',
                 'contentPath': 'test/fixtures/properties'
-            }
+            },
+            views: 'test/fixtures/templates'
         },
         'context': {
             'get': function() {
@@ -82,7 +85,8 @@ module.exports = {
                         }
                     ]
 
-                }
+                },
+                views: 'test/fixtures/templates'
             }
 
         },
