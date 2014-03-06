@@ -30,7 +30,8 @@ var fs = require('fs'),
 //baseTemplatePath
 
 exports.create = function (config) {
-    var res = resolver.create({ root: config.baseContentPath, ext: 'properties', fallback: config.fallbackLocale });
+    var i18n = config.i18n,
+        res = resolver.create({ root: i18n.contentPath, ext: 'properties', fallback: i18n.fallback || i18n.fallbackLocale });
     return function onLoad(name, context, callback) {
 
         var out, options, global, locals, locality, props;
@@ -38,10 +39,10 @@ exports.create = function (config) {
         global = context.global;
         locals = context.get('context');
         locality = locals && locals.locality;
-        props = res.resolve(name, locality).file || config.baseContentPath;
+        props = res.resolve(name, locality).file || i18n.contentPath;
 
         options = {
-            src: path.join(config.baseTemplatePath, name + '.dust'),
+            src: path.join(config.views, name + '.dust'),
             props: props
         };
 

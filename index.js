@@ -39,12 +39,6 @@ function wrapDustOnLoad(ext, config) {
         conf = {},
         viewCache,
         i18n = config.i18n;
-    if (config.i18n) {
-        conf.fallbackLocale = i18n.fallback || i18n.fallbackLocale;
-        conf.baseContentPath = i18n.contentPath;
-        conf.ext = ext;
-        conf.baseTemplatePath = config.views;
-    }
 
     var onLoad = (i18n) ? views[ext].create(config) : function load(name, context, cb) {
         var views, file;
