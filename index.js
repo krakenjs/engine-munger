@@ -37,10 +37,11 @@ function wrapDustOnLoad(ext, config) {
     var specialization,
         mappedName,
         conf = {},
-        viewCache;
-    if (i18n) {
-        conf.fallbackLocale = config.i18n.fallback || config.i18n.fallbackLocale;
-        conf.baseContentPath = config.i18n.contentPath;
+        viewCache,
+        i18n = config.i18n;
+    if (config.i18n) {
+        conf.fallbackLocale = i18n.fallback || i18n.fallbackLocale;
+        conf.baseContentPath = i18n.contentPath;
         conf.ext = ext;
         conf.baseTemplatePath = config.views;
     }
@@ -55,7 +56,7 @@ function wrapDustOnLoad(ext, config) {
         });
     };
     //custom cache for all specialized or localized templates
-    viewCache = cache.create(onLoad, config.i18n.fallbackLocale);
+    viewCache = cache.create(onLoad, i18n ? i18n.fallbackLocale : '*');
     onLoad = viewCache.get.bind(viewCache);
     dustjs.onLoad = function (name, context, cb) {
         specialization = (typeof context.get === 'function' && context.get('_specialization')) || context._specialization;
@@ -79,7 +80,7 @@ exports.dust = function (config) {
         return engine.dust(settings);
     }
 
-    wrapDustOnLoad('dust', config.i18n);
+    wrapDustOnLoad('dust', config);
 
     // Disabling cache
     // since we add our own caching layer below. (Clone it first so we don't muck with the original object.)
@@ -95,7 +96,7 @@ exports.js = function (config) {
     var renderer = engine.js(config.settings || {});
     var engine = (config.specialization) ? wrapEngine(config, renderer) : renderer;
     if (config.specialization || config.i18n) {
-        wrapDustOnLoad('js', config.i18n);
+        wrapDustOnLoad('js', config);
     }
     return engine;
 };
