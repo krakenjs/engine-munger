@@ -58,7 +58,7 @@ function buildCtor(fallback) {
         this.root = options.root;
         this.defaultEngine = options.defaultEngine;
         this.engines = options.engines;
-       // this.resolver = resolver.create({ root: options.root, ext: this.defaultEngine, fallback: fallback });
+        this.resolver = resolver.create({ root: options.root, ext: this.defaultEngine, fallback: fallback });
     }
 
     View.prototype = proto;
@@ -68,11 +68,11 @@ function buildCtor(fallback) {
 }
 
 
-exports.create = function (config) {
+exports.create = function (config, app) {
     var res;
 
-    res = resolver.create({ root: app.get('views'), ext: app.get('view engine'), fallback: config.fallbackLocale });
-    //app.set('view', buildCtor(config.fallbackLocale));
+    res = resolver.create({ root: config.views, ext: 'js', fallback: config.i18n.fallbackLocale });
+    app.set('view', buildCtor(config.fallbackLocale));
 
     return function onLoad(name, context, callback) {
         var locals, view;
