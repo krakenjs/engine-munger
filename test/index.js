@@ -1,207 +1,118 @@
 'use strict';
 var dustjs = require('dustjs-linkedin'),
     test = require('tape'),
-    mockery = require('mockery'),
     engineMunger = require('../index'),
-    adaro = require('adaro'),
     testData = require('./fixtures/testConfig'),
+    freshy = require('freshy'),
     app = {
-        'views':null,
-        'view engine': null,
-        get: function(val) {
-            return app[val];
-        },
         set: function(param, val) {
             app[param] = val;
-        },
-        engines: {
-            dust: function() {
-
-            },
-            js: function() {
-
-            }
         }
     };
 
 
 test('engine-munger', function (t) {
+    var settings = {cache: false};
 
-   /* appSetUp('js');
     t.test('when no specialization or internationalization enabled for js engine', function (t) {
-        var config = testData.none.config,
-            renderer = function (file, context) {
-                t.equal(context._specialization, undefined);
-                dustjs.onLoad('jekyll', context);
-            };
+        var settings = {cache: false},
+            config = testData['none-js'].config;
 
-        dustjs.onLoad = function(name, context, cb) {
-            t.equal(name, 'jekyll');
+        engineMunger['js'](settings, config, app)('test', {views: 'test/fixtures/.build'}, function(err, data) {
+            t.equal(err, null);
+            t.equal(data, '<h1>Hey Test</h1>');
             t.end();
-        };
-        engineMunger['js'](app, config, renderer)('test/fixtures/hyde', {});
+        });
     });
 
     t.test('when only specialization enabled for js engine', function (t) {
-        var config = testData.onlySpcl.config,
-            context = testData.onlySpcl.context,
-            renderer = function (file, context) {
-                t.deepEqual(context._specialization, {'spcl/jekyll': 'spcl/hyde'});
-                dustjs.onLoad('spcl/jekyll', context, function(err, data){
-                    t.equal(err, null);
-                    t.notEquals((''+data).indexOf('Hola Hyde'), -1);
-                    t.end();
-                });
-            };
+        var config = testData['onlySpcl-js'].config,
+            context = testData['onlySpcl-js'].context;
 
-        engineMunger['js'](app, config, renderer)('test/fixtures/hyde', context);
-
+        engineMunger['js'](settings, config, app)('spcl/jekyll', context, function(err, data) {
+            t.equal(err, null);
+            t.equal(data, '<h1>Hola Hyde</h1>');
+            t.end();
+        });
     });
 
     t.test('when only internationalization enabled for js engine', function (t) {
+        var config = testData['onlyIntl-js'].config,
+            context = testData['onlyIntl-js'].context;
 
-        var config = testData.onlyIntl.config,
-            context = testData.onlyIntl.context,
-            renderer = function (file, context) {
-                t.equal(context._specialization, undefined);
-                dustjs.onLoad('jekyll', context, function(err, data){
-                    t.equal(err, null);
-                    t.notEquals((''+data).indexOf('Hola Jekyll'), -1);
-                    t.end();
-                });
-            };
-
-        engineMunger['js'](app, config, renderer)('jekyll', context);
+        engineMunger['js'](settings, config, app)('jekyll', context, function(err, data) {
+            console.info('err', err);
+            t.equal(err, null);
+            t.equal(data, '<h1>Hola Jekyll</h1>');
+            t.end();
+        });
 
     });
 
     t.test('when specialization and internationalization enabled for js engine', function (t) {
+        var config = testData['spclAndIntl-js'].config,
+            context = testData['spclAndIntl-js'].context;
 
-        var config = testData.spclAndIntl.config.js,
-            context = testData.spclAndIntl.context,
-            renderer = function (file, context) {
-                t.deepEqual(context._specialization, {'spcl/jekyll': 'spcl/hyde'});
-                dustjs.onLoad('spcl/jekyll', context, function(err, data){
-                    t.equal(err, null);
-                    t.notEquals((''+data).indexOf('Hola Hyde'), -1);
-                    t.end();
-                });
-            };
-
-        engineMunger['js'](app, config, renderer)('jekyll', context);
-
-    });
-
-*/
-    t.test('when no specialization or internationalization enabled for dust engine', function (t) {
-
-        var config = testData.none.config,
-            renderer = function (file, context) {
-                t.equal(context._specialization, undefined);
-                dustjs.onLoad('jekyll', context, function() {
-                    t.end();
-                });
-            };
-
-        dustjs.onLoad = function(name, context, cb) {
-            t.equal(name, 'jekyll');
-            t.end();
-        };
-        engineMunger['dust'](app, config, renderer)('hyde', {});
-    });
-
-    t.test('using munger when only specialization enabled for dust engine', function (t) {
-        var config = testData.onlySpcl.config,
-            context = testData.onlySpcl.context,
-            renderer = function (file, context) {
-                t.deepEqual(context._specialization, {'spcl/jekyll': 'spcl/hyde'});
-                dustjs.onLoad('spcl/jekyll', context, function(err, data){
-                    t.equal(err, null);
-                    t.equal(data, '<h1>Hello from hyde</h1>');
-                    t.end();
-                });
-            };
-
-        engineMunger['dust'](app, config, renderer )('specl/jekyll', context, function(err, data) {
+        engineMunger['js'](settings, config, app)('spcl/jekyll', context, function(err, data) {
+            t.equal(err, null);
+            t.equal(data, '<h1>Hola Hyde</h1>');
             t.end();
         });
 
     });
+
+    t.test('when no specialization or internationalization enabled for dust engine', function (t) {
+
+        var config = testData['none-dust'].config;
+
+        engineMunger['dust'](settings, config)('test', {views: 'test/fixtures/templates'}, function(err, data) {
+            t.equal(err, null);
+            t.equal(data, '<h1>Hey Test</h1>');
+            t.end();
+        });
+    });
+
+
+    /*t.test('using munger when only specialization enabled for dust engine', function (t) {
+        var success = freshy.unload('dustjs-linkedin');
+        dustjs = freshy.reload('dustjs-linkedin');
+        t.equal(success, true);
+        console.info('\n\n\n\n\n******** unloaded ???', success);
+        var config = testData['onlySpcl-dust'].config,
+            context = testData['onlySpcl-dust'].context;
+
+        engineMunger['dust'](settings, config)('spcl/jekyll', context, function (err, data) {
+            console.info('err', err);
+            t.equal(err, null);
+            t.equal(data, '<h1>Hello from hyde</h1>');
+            t.end();
+        });
+
+    });*/
 
 
     t.test('when only internationalization is enabled for dust engine', function (t) {
+        var config = testData['onlyIntl-dust'].config,
+            context = testData['onlyIntl-dust'].context;
 
-        var config = testData.onlyIntl.config,
-            context = testData.onlyIntl.context;
-        doMockeryStuff(function renderer (file, context, cb) {
-            t.deepEqual(context._specialization, undefined);
-            dustjs.onLoad('jekyll', context, function(err, data){
-                var res = JSON.stringify('' + data);
-
-                t.equal(err, null);
-                t.notEquals(res.indexOf('Hola Jekyll'), -1);
-                mockery.disable();
-                t.end();
-            });
-
+        engineMunger['dust'](settings, config)('jekyll', context, function(err, data) {
+            t.equal(err, null);
+            t.equal(data, '<h1>Hola Jekyll</h1>');
+            t.end();
         });
-        engineMunger['dust'](app, config)('test/fixtures/templates/jekyll', context);
 
     });
 
 
     t.test('when specialization/internationalization is enabled for dust engine', function(t) {
-        var config = testData.spclAndIntl.config.dust,
-            context = testData.spclAndIntl.context;
-        doMockeryStuff(function renderer (file, context, cb) {
-            t.deepEqual(context._specialization, {jekyll: 'hyde'});
-            dustjs.onLoad('jekyll', context, function(err, data) {
-                var res = JSON.stringify('' + data);
-                t.equal(err, null);
-                t.notEquals(res.indexOf('Hola Hyde'), -1);
-                mockery.disable();
-                t.end();
-            });
+        var config = testData['spclAndIntl-dust'].config,
+            context = testData['spclAndIntl-dust'].context;
 
+        engineMunger['dust'](settings, config)('spcl/jekyll', context, function(err, data) {
+            t.equal(err, null);
+            t.equal(data, '<h1>Hello from hyde</h1>');
+            t.end();
         });
-        engineMunger['dust'](app, config)('test/fixtures/templates/jekyll', context);
     });
 
 });
-
-//*****************************************************
-//The following functions are used for some test setup
-//*****************************************************
-
-//have to use mockery as internally for i18n
-//we switch the engine using adaro for js engine
-
-function doMockeryStuff(renderer) {
-    mockery.enable({
-        warnOnUnregistered: false,
-        useCleanCache: true
-    });
-    mockery.registerMock('adaro', {
-        js: function() {
-            return renderer;
-        },
-        dust: function() {
-            return renderer;
-        }
-    });
-
-    adaro = require('adaro');
-    engineMunger = require('../index');
-    dustjs = require('dustjs-linkedin');
-}
-
-// do app setUp
-function appSetUp(mode) {
-    if (mode === 'js') {
-        app.set('views', 'test/fixtures/.build');
-        app.set('view engine', 'js');
-    } else {
-        app.set('views', 'test/fixtures/templates');
-        app.set('view engine', 'dust');
-    }
-}

@@ -66,9 +66,11 @@ function wrapDustOnLoad(ext, config, app) {
     };
 }
 
-exports.dust = function (stngs, config) {
-    var settings =  stngs || {},
+exports.dust = function (settings, config) {
+    var settings =  (arguments.length > 1) ? settings : {},
+        config = (arguments.length > 1) ? config : settings,
         renderer;
+
     if (!(config.specialization || config.i18n)) {
         return engine.dust(settings);
     }
@@ -83,12 +85,13 @@ exports.dust = function (stngs, config) {
 
     // For i18n we silently switch to the JS engine for all requests, passing config
     renderer = config.i18n ? engine.js(settings): engine.dust(settings);
-
     return wrapEngine(config, renderer);
 };
 
-exports.js = function (stngs, config, app) {
-    var settings = stngs || {},
+exports.js = function (settings, config, app) {
+    var settings =  (arguments.length > 2) ? settings : {},
+        config = (arguments.length > 2) ? config : settings,
+        app = (arguments.length > 2) ? app : config,
         renderer;
 
     if (!(config.specialization || config.i18n)) {

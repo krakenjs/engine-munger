@@ -1,14 +1,14 @@
 module.exports = {
-    'none': {
+    'none-js': {
         config: {
-            i18n: null,
-            specialization: null,
-            views: 'test/fixtures/templates'
+            'views': 'test/fixtures/.build/',
+            'view engine': 'js'
         }
     },
-    'onlySpcl': {
+    'onlySpcl-js': {
         'config': {
-            'i18n': null,
+            'views': 'test/fixtures/.build/',
+            'view engine': 'js',
             'specialization': {
                 'spcl/jekyll': [
                     {
@@ -18,89 +18,125 @@ module.exports = {
                         }
                     }
                 ]
-
-            },
-            views: 'test/fixtures/templates'
+            }
         },
         'context': {
             'whoAmI': 'badGuy',
-            'get' : function(name) {
-                if(name === 'context'){
-                    return {
-                        locality: 'es_US'
-                    }
-                } else {
-                    return module.exports.onlySpcl.context._specialization;
-                }
+            views: 'test/fixtures/.build'
+        }
+    },
+    'onlyIntl-js': {
+        'config': {
+            'views': 'test/fixtures/.build/',
+            'view engine': 'js',
+            'i18n': {
+                'fallback': 'en-US',
+                'contentPath': 'test/fixtures/properties'
+            }
+        },
+        'context': {
+            views: 'test/fixtures/.build',
+            context: {
+                locality: 'es_US'
             }
         }
     },
-    'onlyIntl': {
+    'spclAndIntl-js': {
+        'config': {
+            'views': 'test/fixtures/.build/',
+            'view engine': 'js',
+            'i18n': {
+                'fallback': 'en-US',
+                'contentPath': 'test/fixtures/properties'
+            },
+            specialization: {
+                'spcl/jekyll': [
+                    {
+                        template: 'spcl/hyde',
+                        rules: {
+                            'whoAmI': 'badGuy'
+                        }
+                    }
+                ]
+
+            }
+        },
+        'context': {
+            views: 'test/fixtures/.build',
+            whoAmI: 'badGuy',
+            context: {
+                locality: 'es_US'
+            }
+        }
+    },
+    'none-dust': {
+        config: {
+            'views': 'test/fixtures/templates',
+            'view engine': 'dust'
+        }
+    },
+    'onlySpcl-dust': {
+        'config': {
+            'views': 'test/fixtures/templates',
+            'view engine': 'dust',
+            'specialization': {
+                'spcl/jekyll': [
+                    {
+                        'template': 'spcl/hyde',
+                        'rules': {
+                            'whoAmI': 'badGuy'
+                        }
+                    }
+                ]
+            }
+        },
+        'context': {
+            'whoAmI': 'badGuy',
+            'views': 'test/fixtures/templates'
+        }
+    },
+    'onlyIntl-dust': {
+        'config': {
+            'views': 'test/fixtures/templates',
+            'view engine': 'dust',
+            'i18n': {
+                'fallback': 'en-US',
+                'contentPath': 'test/fixtures/properties'
+            }
+        },
+        'context': {
+            views: 'test/fixtures/templates',
+            context: {
+                locality: 'es_US'
+            }
+        }
+    },
+    'spclAndIntl-dust': {
         'config': {
             'i18n': {
                 'fallback': 'en-US',
                 'contentPath': 'test/fixtures/properties'
             },
+            specialization: {
+                'spcl/jekyll': [
+                    {
+                        template: 'spcl/hyde',
+                        rules: {
+                            'whoAmI': 'badGuy'
+                        }
+                    }
+                ]
+
+            },
             views: 'test/fixtures/templates'
         },
         'context': {
-            'get': function() {
-                return {
-                    locality: 'es_US'
-                };
-            }
-        }
-    },
-    'spclAndIntl': {
-        'config': {
-            js: {
-                'i18n': {
-                    'fallback': 'en-US',
-                    'contentPath': 'test/fixtures/properties'
-                },
-                specialization: {
-                    'spcl/jekyll': [
-                        {
-                            template: 'spcl/hyde',
-                            rules: {
-                                'whoAmI': 'badGuy'
-                            }
-                        }
-                    ]
-
-                }
-            },
-            dust: {
-                'i18n': {
-                    'fallback': 'en-US',
-                    'contentPath': 'test/fixtures/properties'
-                },
-                specialization: {
-                    'jekyll': [
-                        {
-                            template: 'hyde',
-                            rules: {
-                                'whoAmI': 'badGuy'
-                            }
-                        }
-                    ]
-
-                },
-                views: 'test/fixtures/templates'
-            }
-
-        },
-        context: {
+            views: 'test/fixtures/templates',
             whoAmI: 'badGuy',
-            get: function(name) {
-                if(name === 'context'){
-                    return {
-                        locality: 'es_US'
-                    }
-                } else {
-                    return module.exports.spclAndIntl.context._specialization;
-                }
+            context: {
+                locality: 'es_US'
             }
         }
+
     }
-}
+};

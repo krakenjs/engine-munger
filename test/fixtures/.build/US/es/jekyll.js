@@ -1,1 +1,1 @@
-(function(){dust.register("jekyll",body_0);function body_0(chk,ctx){return chk.write("<h1>Hola Jekyll</h1>");}return body_0;})();
+(function(){dust.register("jekyll", body_0);function body_0(chk,ctx){return chk.write("<h1>Hola Jekyll</h1>");}return body_0;})();
