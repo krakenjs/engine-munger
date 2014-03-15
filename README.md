@@ -20,7 +20,7 @@ All engine-munger does is includes a specialization map with the list of key val
 }
 ```
 
-#Currently supported template engines out of the box:
+##### Currently supported template engines out of the box:
 
 * Dust: Engine types 'js' and 'dust'
 
@@ -35,8 +35,8 @@ app.engine('dust', engine-munger['dust'](settings, config));
 app.engine('js', engine-munger['js'](settings, config, app));
 ```
 
-* settings [JSON] : Arguments you want passed to the templating engine,
-* config: [JSON] : used to specify whether you need i18n/specialization enabled. It also compulsarily requires the 'view' and 'view engine' settings passed into express app.
+* settings : [JSON] Arguments you want passed to the templating engine,
+* config: [JSON] used to specify whether you need i18n/specialization enabled. It also compulsarily requires the 'view' and 'view engine' settings passed into express app.
 
  If you are using kraken-js 1.0 along with engine-munger, the kraken generator will automatically set this all up for you.
  But if you want to use this with a stand alone express app with dust as templating engine, you can specify as follows:
