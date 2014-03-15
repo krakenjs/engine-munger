@@ -20,8 +20,7 @@
     "istanbul": "~0.2.4",
     "jshint": "~2.4.3",
     "mockery": "~1.4.0",
-    "dustjs-helpers": "~1.2.0",
-    "freshy": "git://github.com/totherik/freshy.git"
+    "dustjs-helpers": "~1.2.0"
   },
   "peerDependencies": {
     "dustjs-linkedin": "~2.0.0",

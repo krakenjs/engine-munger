@@ -3,7 +3,6 @@ var dustjs = require('dustjs-linkedin'),
     test = require('tape'),
     engineMunger = require('../index'),
     testData = require('./fixtures/testConfig'),
-    freshy = require('freshy'),
     app = {
         set: function(param, val) {
             app[param] = val;

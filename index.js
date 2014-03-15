@@ -66,17 +66,17 @@ function wrapDustOnLoad(ext, config, app) {
     };
 }
 
-exports.dust = function (settings, config) {
-    var settings =  (arguments.length > 1) ? settings : {},
-        config = (arguments.length > 1) ? config : settings,
+exports.dust = function (setting, config) {
+    var settings =  (arguments.length > 1) ? setting : {},
+        configs = (arguments.length > 1) ? config : setting,
         renderer;
 
-    if (!(config.specialization || config.i18n)) {
+    if (!(configs.specialization || configs.i18n)) {
         return engine.dust(settings);
     }
 
-    if(config['view engine'] === 'dust') {
-        wrapDustOnLoad('dust', config);
+    if (configs['view engine'] === 'dust') {
+        wrapDustOnLoad('dust', configs);
     }
 
     // Disabling cache
@@ -84,28 +84,28 @@ exports.dust = function (settings, config) {
     settings.cache = false;
 
     // For i18n we silently switch to the JS engine for all requests, passing config
-    renderer = config.i18n ? engine.js(settings): engine.dust(settings);
-    return wrapEngine(config, renderer);
+    renderer = configs.i18n ? engine.js(settings): engine.dust(settings);
+    return wrapEngine(configs, renderer);
 };
 
-exports.js = function (settings, config, app) {
-    var settings =  (arguments.length > 2) ? settings : {},
-        config = (arguments.length > 2) ? config : settings,
-        app = (arguments.length > 2) ? app : config,
+exports.js = function (setting, config, app) {
+    var settings =  (arguments.length > 2) ? setting : {},
+        configs = (arguments.length > 2) ? config : setting,
+        ap = (arguments.length > 2) ? app : config,
         renderer;
 
-    if (!(config.specialization || config.i18n)) {
+    if (!(configs.specialization || configs.i18n)) {
         return engine.js(settings);
     }
 
-    if (config['view engine'] === 'js') {
-        wrapDustOnLoad('js', config, app);
+    if (configs['view engine'] === 'js') {
+        wrapDustOnLoad('js', configs, ap);
     }
 
     // Disabling cache
     // since we add our own caching layer below. (Clone it first so we don't muck with the original object.)
     settings.cache = false;
     renderer = engine.js(settings);
-    return (config.specialization) ? wrapEngine(config, renderer) : renderer;
+    return (configs.specialization) ? wrapEngine(configs, renderer) : renderer;
 };
 
