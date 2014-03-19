@@ -128,10 +128,11 @@ module.exports = {
                 ]
 
             },
-            views: 'test/fixtures/templates'
+            'views' : 'test/fixtures/templates',
+            'view engine': 'dust'
         },
         'context': {
-            views: 'test/fixtures/templates',
+           'views' : 'test/fixtures/templates',
             whoAmI: 'badGuy',
             context: {
                 locality: 'es_US'

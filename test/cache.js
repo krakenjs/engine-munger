@@ -7,7 +7,6 @@ test('cache', function (t) {
         invoked = false;
 
     t.test('create cache success', function(t) {
-
         var provider = function(name, context, cb) {
         };
         cache = cash.create(provider, 'en_US');
@@ -23,8 +22,6 @@ test('cache', function (t) {
 
 
     t.test('cache get hits the provider function', function (t) {
-
-
         var provider = function(name, context, cb) {
                 invoked = true;
                 cb(null, 'Test');
