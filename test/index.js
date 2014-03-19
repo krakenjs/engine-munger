@@ -7,6 +7,9 @@ var dustjs = require('dustjs-linkedin'),
     app = {
         set: function(param, val) {
             app[param] = val;
+        },
+        get: function(param) {
+            return app[param];
         }
     };
 
@@ -38,8 +41,8 @@ test('engine-munger', function (t) {
     });
 
     t.test('when only internationalization enabled for js engine', function (t) {
-        var config = testData['onlyIntl-js'].config,
-            context = testData['onlyIntl-js'].context;
+        var config = Object.create(testData['onlyIntl-js'].config),
+            context = Object.create(testData['onlyIntl-js'].context);
         resetDust();
         engineMunger['js'](settings, config, app)('jekyll', context, function(err, data) {
             t.equal(err, null);
@@ -61,9 +64,36 @@ test('engine-munger', function (t) {
 
     });
 
+    t.test('when no specialization or internationalization enabled for dust engine', function (t) {
+
+        var config = testData['none-dust'].config;
+
+        resetDust();
+        engineMunger['dust'](settings, config)('test', {views: 'test/fixtures/templates'}, function(err, data) {
+            t.equal(err, null);
+            t.equal(data, '<h1>Hey Test</h1>');
+            t.end();
+        });
+    });
+
+
+    t.test('using munger when only specialization enabled for dust engine', function (t) {
+
+        var config = testData['onlySpcl-dust'].config,
+            context = testData['onlySpcl-dust'].context;
+
+        resetDust();
+        engineMunger['dust'](settings, config)('spcl/jekyll', context, function (err, data) {
+            t.equal(err, null);
+            t.equal(data, '<h1>Hello from hyde</h1>');
+            t.end();
+        });
+
+    });
+
     t.test('when only internationalization is enabled for dust engine', function (t) {
-        var config = testData['onlyIntl-dust'].config,
-            context = testData['onlyIntl-dust'].context;
+        var config = Object.create(testData['onlyIntl-dust'].config),
+            context = Object.create(testData['onlyIntl-dust'].context);
         resetDust();
         engineMunger['dust'](settings, config)('jekyll', context, function(err, data) {
             t.equal(err, null);
@@ -87,32 +117,65 @@ test('engine-munger', function (t) {
     });
 
 
-    t.test('when no specialization or internationalization enabled for dust engine', function (t) {
-
-        var config = testData['none-dust'].config;
+    t.test('i18n using view.render for js engine', function(t) {
+        var config = Object.create(testData['onlyIntl-js'].config),
+            context = Object.create(testData['onlyIntl-js'].context);
         resetDust();
+        var engine = engineMunger['js'](settings, config, app),
+            View = app.get('view');
 
-        engineMunger['dust'](settings, config)('test', {views: 'test/fixtures/templates'}, function(err, data) {
+        context.root = context.views;
+        context.defaultEngine = 'js';
+        context.engines = {};
+        context.engines['.js'] = engine;
+        context.settings = {cache: false};
+
+        var view  = new View('jekyll', context);
+        view.render(context, function(err, data) {
             t.equal(err, null);
-            t.equal(data, '<h1>Hey Test</h1>');
+            t.equal(data, '<h1>Hola Jekyll</h1>');
             t.end();
         });
     });
 
+    //error cases
+    t.test('i18n with js engine- template not found case', function(t) {
+        var config = testData['onlyIntl-js'].config,
+            context = testData['onlyIntl-js'].context;
+        resetDust();
+        engineMunger['js'](settings, config, app)('peekaboo', context, function(err, data) {
+            t.equal(err.message, 'Invalid template [peekaboo]');
+            t.equal(data, undefined);
+            t.end();
+        });
 
-     t.test('using munger when only specialization enabled for dust engine', function (t) {
+    });
 
-         var config = testData['onlySpcl-dust'].config,
-             context = testData['onlySpcl-dust'].context;
 
-         resetDust();
-         engineMunger['dust'](settings, config)('spcl/jekyll', context, function (err, data) {
-         t.equal(err, null);
-         t.equal(data, '<h1>Hello from hyde</h1>');
-         t.end();
-         });
+    t.test('i18n dust engine- catch error while compiling invalid dust', function(err, data) {
 
+        var config = testData['onlyIntl-dust'].config,
+            context = testData['onlyIntl-dust'].context;
+        resetDust();
+        engineMunger['dust'](settings, config)('invalidTemp', context, function(err, data) {
+            t.equal(err.message, 'Invalid template [invalidTemp]');
+            t.equal(data, undefined);
+            t.end();
+        });
+
+    });
+
+    /*t.test('i18n dust engine- catch error from localizr', function(t) {
+     var config = Object.create(testData['onlyIntl-dust'].config),
+     context = Object.create(testData['onlyIntl-dust'].context);
+     resetDust();
+     engineMunger['dust'](settings, config)('invalidPre', context, function(err, data) {
+     t.equal(err.message, 'Malformed tag. Tag not closed correctly');
+     t.equal(data, undefined);
+     t.end();
      });
+
+     });*/
 
 });
 
