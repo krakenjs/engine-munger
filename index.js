@@ -71,7 +71,7 @@ exports.dust = function (setting, config) {
         configs = (arguments.length > 1) ? config : setting,
         renderer;
 
-    if (!(configs || configs.specialization || configs.i18n)) {
+    if (!configs || !(configs.specialization || configs.i18n)) {
         return engine.dust(settings);
     }
 
@@ -94,7 +94,7 @@ exports.js = function (setting, config, app) {
         ap = (arguments.length > 2) ? app : config,
         renderer;
 
-    if (!(configs || configs.specialization || configs.i18n)) {
+    if (!configs || !(configs.specialization || configs.i18n)) {
         return engine.js(settings);
     }
 

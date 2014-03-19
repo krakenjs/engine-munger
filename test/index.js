@@ -86,7 +86,6 @@ test('engine-munger', function (t) {
         });
     });
 
-    //there is a weird problem of switching between engines on the fly. There is some global manupulation problem somewher
 
     t.test('when no specialization or internationalization enabled for dust engine', function (t) {
 
@@ -119,7 +118,7 @@ test('engine-munger', function (t) {
 
 function resetDust() {
     var freshDust = freshy.freshy('dustjs-linkedin');
-
+    dustjs.onLoad = freshDust.onLoad;
     dustjs.load = freshDust.load;
     dustjs.cache = freshDust.cache;
 }

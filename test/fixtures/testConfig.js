@@ -71,8 +71,7 @@ module.exports = {
     },
     'none-dust': {
         config: {
-            'views': 'test/fixtures/templates',
-            'view engine': 'dust'
+            'views': 'test/fixtures/templates'
         }
     },
     'onlySpcl-dust': {
