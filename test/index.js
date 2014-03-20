@@ -154,8 +154,8 @@ test('engine-munger', function (t) {
 
     t.test('i18n dust engine- catch error while compiling invalid dust', function(err, data) {
 
-        var config = testData['onlyIntl-dust'].config,
-            context = testData['onlyIntl-dust'].context;
+        var config = Object.create(testData['onlyIntl-dust'].config),
+            context = Object.create(testData['onlyIntl-dust'].context);
         resetDust();
         engineMunger['dust'](settings, config)('invalidTemp', context, function(err, data) {
             t.equal(err.message, 'Invalid template [invalidTemp]');
@@ -164,18 +164,6 @@ test('engine-munger', function (t) {
         });
 
     });
-
-    /*t.test('i18n dust engine- catch error from localizr', function(t) {
-     var config = Object.create(testData['onlyIntl-dust'].config),
-     context = Object.create(testData['onlyIntl-dust'].context);
-     resetDust();
-     engineMunger['dust'](settings, config)('invalidPre', context, function(err, data) {
-     t.equal(err.message, 'Malformed tag. Tag not closed correctly');
-     t.equal(data, undefined);
-     t.end();
-     });
-
-     });*/
 
 });
 
