@@ -5,10 +5,10 @@ A template engine munging library.
 It looks for appropriate template consolidation library for specified view engine and includes i18n and specialization in the workflow.
 
 ###### What does i18n mean ?
-Localization of included content tags for a specified locale. Currently supported only for dust templating engine and internally uses the module 'localizr' for translating content tags included in the templates
+Localization of included content tags for a specified locale. Currently supported only for dust templating engine and internally uses the module [localizr]() for translating content tags included in the templates
 
 ###### What does specialization mean ?
-Ability to switch a specific template with another based on a rule set specified in the app config. The actual rule parsing is done using the module 'karka' and can be extended and used in any templating engine and not dust.
+Ability to switch a specific template with another based on a rule set specified in the app config. The actual rule parsing is done using the module [karka](https://github.com/pvenkatakrishnan/karka) and can be extended and used in any templating engine and not dust.
 All engine-munger does is includes a specialization map with the list of key value pairs using the karka module.
 ```javascript
 {
