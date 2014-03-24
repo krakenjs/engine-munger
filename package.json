@@ -7,12 +7,16 @@
     "name": "Poornima Venkatakrishnan",
     "email": "pvenkatakrishnan@paypal.com"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/krakenjs/engine-munger.git"
+  },
   "dependencies": {
     "graceful-fs": "~2.0.1",
     "concat-stream": "~1.4.1",
-    "karka": "git://github.com/pvenkatakrishnan/karka.git",
+    "karka": "~0.0.1",
     "localizr": "git://github.com/totherik/localizr.git",
-    "fileResolver": "git://github.com/pvenkatakrishnan/fileResolver.git"
+    "file-resolver": "~0.0.1"
   },
   "devDependencies": {
     "tape": "~2.4.2",

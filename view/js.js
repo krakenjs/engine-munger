@@ -19,7 +19,7 @@
 
 var path = require('path'),
     fs = require('graceful-fs'),
-    resolver = require('fileResolver');
+    resolver = require('file-resolver');
 
 
 var proto = {

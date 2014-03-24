@@ -64,3 +64,19 @@ app.engine('js', engine-munger['js'](settings, config, app));
 
          }
      };
+ ```
+
+Running Tests:
+
+```
+To run tests:
+$ npm test
+
+To run coverage
+$ npm run-script cover
+
+To run lint
+$ npm run-script lint
+```
+
+

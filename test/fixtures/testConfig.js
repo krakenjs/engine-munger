@@ -12,8 +12,8 @@ module.exports = {
             'specialization': {
                 'spcl/jekyll': [
                     {
-                        'template': 'spcl/hyde',
-                        'rules': {
+                        'is': 'spcl/hyde',
+                        'when': {
                             'whoAmI': 'badGuy'
                         }
                     }
@@ -52,8 +52,8 @@ module.exports = {
             specialization: {
                 'spcl/jekyll': [
                     {
-                        template: 'spcl/hyde',
-                        rules: {
+                        is: 'spcl/hyde',
+                        when: {
                             'whoAmI': 'badGuy'
                         }
                     }
@@ -81,8 +81,8 @@ module.exports = {
             'specialization': {
                 'spcl/jekyll': [
                     {
-                        'template': 'spcl/hyde',
-                        'rules': {
+                        'is': 'spcl/hyde',
+                        'when': {
                             'whoAmI': 'badGuy'
                         }
                     }
@@ -119,8 +119,8 @@ module.exports = {
             specialization: {
                 'spcl/jekyll': [
                     {
-                        template: 'spcl/hyde',
-                        rules: {
+                        is: 'spcl/hyde',
+                        when: {
                             'whoAmI': 'badGuy'
                         }
                     }

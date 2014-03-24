@@ -20,7 +20,7 @@
 var fs = require('fs'),
     localizr = require('localizr'),
     dustjs = require('dustjs-linkedin'),
-    resolver = require('fileResolver'),
+    resolver = require('file-resolver'),
     path = require('path'),
     concat = require('concat-stream');
 
