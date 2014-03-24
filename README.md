@@ -55,8 +55,8 @@ app.engine('js', engine-munger['js'](settings, config, app));
          specialization: {
              'jekyll': [
                  {
-                     template: 'hyde',
-                     rules: {
+                     is: 'hyde',
+                     when: {
                          'whoAmI': 'badGuy'
                      }
                  }
