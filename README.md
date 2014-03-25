@@ -1,4 +1,4 @@
-engine-munger [![Build Status](https://travis-ci.org/paypal/kraken-js.png)](https://travis-ci.org/pvenkatakrishnan/engine-munger)
+engine-munger [![Build Status](https://travis-ci.org/paypal/kraken-js.png)](https://travis-ci.org/krakenjs/engine-munger)
 =============
 
 A template engine munging library.
