@@ -15,7 +15,7 @@
     "graceful-fs": "~2.0.1",
     "concat-stream": "~1.4.1",
     "karka": "~0.0.1",
-    "localizr": "git://github.com/totherik/localizr.git",
+    "localizr": "~0.1.0",
     "file-resolver": "~0.0.1"
   },
   "devDependencies": {
