@@ -31,7 +31,7 @@ var fs = require('fs'),
 
 exports.create = function (config) {
     var i18n = config.i18n,
-        res = resolver.create({ root: i18n.contentPath, ext: 'properties', fallback: i18n.fallback || i18n.fallbackLocale });
+        res = resolver.create({ root: i18n.contentPath, ext: 'properties', fallback: i18n.fallback});
     return function onLoad(name, context, callback) {
 
         var out, options, global, locals, locality, props;
@@ -56,11 +56,7 @@ exports.create = function (config) {
             }
         });
 
-        try {
-            localizr.createReadStream(options).pipe(out);
-        } catch (e) {
-            callback(e);
-        }
+        localizr.createReadStream(options).pipe(out);
     };
 };
 

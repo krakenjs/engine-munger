@@ -31,7 +31,7 @@ exports.dust = function (setting, config) {
     }
 
     if (configs['view engine'] === 'dust') {
-        munger.wrapDustOnLoad('dust', configs);
+        munger.wrapDustOnLoad('dust', configs, settings.cache);
     }
 
     // Disabling cache
@@ -54,7 +54,7 @@ exports.js = function (setting, config, app) {
     }
 
     if (configs['view engine'] === 'js') {
-        munger.wrapDustOnLoad('js', configs, ap);
+        munger.wrapDustOnLoad('js', configs, settings.cache, ap);
     }
 
     // Disabling cache

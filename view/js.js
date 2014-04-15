@@ -70,7 +70,7 @@ function buildCtor(fallback) {
 
 exports.create = function (config, app) {
     var res,
-        defaultLocale = config.i18n.fallback || config.i18n.fallbackLocale;
+        defaultLocale = config.i18n.fallback;
     res = resolver.create({ root: config.views, ext: 'js', fallback: defaultLocale });
     app.set('view', buildCtor(defaultLocale));
 
