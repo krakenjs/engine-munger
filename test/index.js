@@ -79,11 +79,26 @@ test('engine-munger', function (t) {
 
     t.test('using munger when only specialization enabled for dust engine', function (t) {
 
-        var config = testData['onlySpcl-dust'].config,
-            context = testData['onlySpcl-dust'].context;
+        var config = Object.create(testData['onlySpcl-dust'].config),
+            context = Object.create(testData['onlySpcl-dust'].context);
 
         resetDust();
         engineMunger['dust'](settings, config)('spcl/jekyll', context, function (err, data) {
+            t.equal(err, null);
+            t.equal(data, '<h1>Hello from hyde</h1>');
+            t.end();
+        });
+
+    });
+
+    t.test('using munger when only specialization enabled for dust engine with cache', function (t) {
+
+        var config = testData['onlySpcl-dust'].config,
+            context = testData['onlySpcl-dust'].context,
+            setting = {cache: true};
+
+        resetDust();
+        engineMunger['dust'](setting, config)('spcl/jekyll', context, function (err, data) {
             t.equal(err, null);
             t.equal(data, '<h1>Hello from hyde</h1>');
             t.end();
@@ -105,11 +120,25 @@ test('engine-munger', function (t) {
 
 
     t.test('when specialization/internationalization is enabled for dust engine', function(t) {
-        var config = testData['spclAndIntl-dust'].config,
-            context = testData['spclAndIntl-dust'].context;
+        var config = Object.create(testData['spclAndIntl-dust'].config),
+            context = Object.create(testData['spclAndIntl-dust'].context);
         resetDust();
 
         engineMunger['dust'](settings, config)('spcl/jekyll', context, function(err, data) {
+            t.equal(err, null);
+            t.equal(data, '<h1>Hello from hyde</h1>');
+            t.end();
+        });
+    });
+
+    t.test('when specialization/internationalization is enabled for dust engine with cache', function(t) {
+        var config = Object.create(testData['spclAndIntl-dust'].config),
+            context = Object.create(testData['spclAndIntl-dust'].context),
+            settings = {cache: true};
+        resetDust();
+
+        engineMunger['dust'](settings, config)('spcl/jekyll', context, function(err, data) {
+            console.info('******** err', err);
             t.equal(err, null);
             t.equal(data, '<h1>Hello from hyde</h1>');
             t.end();
@@ -134,6 +163,42 @@ test('engine-munger', function (t) {
         view.render(context, function(err, data) {
             t.equal(err, null);
             t.equal(data, '<h1>Hola Jekyll</h1>');
+            t.end();
+        });
+    });
+
+    t.test('i18n using view.render for js engine with caching', function(t) {
+        var config = Object.create(testData['onlyIntl-js'].config),
+            context = Object.create(testData['onlyIntl-js'].context),
+            settings = {cache: true};
+        resetDust();
+        var engine = engineMunger['js'](settings, config, app),
+            View = app.get('view');
+
+        context.root = context.views;
+        context.defaultEngine = 'js';
+        context.engines = {};
+        context.engines['.js'] = engine;
+        context.settings = {cache: true};
+
+        var view  = new View('jekyll', context);
+        view.render(context, function(err, data) {
+            t.equal(err, null);
+            t.equal(data, '<h1>Hola Jekyll</h1>');
+            t.end();
+        });
+    });
+
+    t.test('when specialization/internationalization is enabled for dust engine with cache', function(t) {
+        var config = testData['spclAndIntl-dust'].config,
+            context = testData['spclAndIntl-dust'].context,
+            settings = {cache: true};
+        resetDust();
+
+        engineMunger['dust'](settings, config)('spcl/jekyll', context, function(err, data) {
+            console.info('******** err', err);
+            t.equal(err, null);
+            t.equal(data, '<h1>Hello from hyde</h1>');
             t.end();
         });
     });
