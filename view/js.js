@@ -33,8 +33,6 @@ exports.create = function (config) {
         locals = context.get('context');
 
         view = res.resolve(name, locals && locals.locality);
-        console.info('the locale rendered in:', locals.locality);
-        console.info('the view rendered:', view.file);
         if (!view.file) {
             callback(new Error('Could not load template ' + name));
             return;
