@@ -32,7 +32,7 @@ var engine-munger = require('engine-munger'),
     app = require('express')();
 
 app.engine('dust', engine-munger['dust'](settings, config));
-app.engine('js', engine-munger['js'](settings, config, app));
+app.engine('js', engine-munger['js'](settings, config));
 ```
 
 * settings : [JSON] Arguments you want passed to the templating engine,
