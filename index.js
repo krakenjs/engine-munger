@@ -43,10 +43,9 @@ exports.dust = function (setting, config) {
     return munger.wrapEngine(configs, renderer);
 };
 
-exports.js = function (setting, config, app) {
-    var settings =  (arguments.length > 2) ? setting : {},
-        configs = (arguments.length > 2) ? config : setting,
-        ap = (arguments.length > 2) ? app : config,
+exports.js = function (setting, config) {
+    var settings =  (arguments.length > 1) ? setting : {},
+        configs = (arguments.length > 1) ? config : setting,
         renderer;
 
     if (!configs || !(configs.specialization || configs.i18n)) {
@@ -54,7 +53,7 @@ exports.js = function (setting, config, app) {
     }
 
     if (configs['view engine'] === 'js') {
-        munger.wrapDustOnLoad('js', configs, settings.cache, ap);
+        munger.wrapDustOnLoad('js', configs, settings.cache);
     }
 
     // Disabling cache
