@@ -56,7 +56,8 @@ app.engine('js', engine-munger['js'](settings, config));
          'view engine': 'dust',
          'i18n': {
              'fallback': 'en-US',
-             'contentPath': 'locales'
+             'contentPath': 'locales',
+             'enableMetadata': true
          },
          specialization: {
              'jekyll': [
