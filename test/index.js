@@ -14,7 +14,7 @@ test('engine-munger', function (t) {
             config = clone(testData['none-js'].config);
 
         resetDust();
-        engineMunger['js'](settings, config)('test', {views: 'test/fixtures/.build'}, function(err, data) {
+        engineMunger.js(settings, config)('test', {views: 'test/fixtures/.build'}, function(err, data) {
             t.equal(err, null);
             t.equal(data, '<h1>Hey Test</h1>');
             t.end();
@@ -25,7 +25,7 @@ test('engine-munger', function (t) {
         var config = clone(testData['onlySpcl-js'].config),
             context = clone(testData['onlySpcl-js'].context);
         resetDust();
-        engineMunger['js'](settings, config)('spcl/jekyll', context, function(err, data) {
+        engineMunger.js(settings, config)('spcl/jekyll', context, function(err, data) {
             t.equal(err, null);
             t.equal(data, '<h1>Hola Hyde</h1>');
             t.end();
@@ -36,7 +36,7 @@ test('engine-munger', function (t) {
         var config = clone(testData['onlyIntl-js'].config),
             context = clone(testData['onlyIntl-js'].context);
         resetDust();
-        engineMunger['js'](settings, config)('jekyll', context, function(err, data) {
+        engineMunger.js(settings, config)('jekyll', context, function(err, data) {
             t.equal(err, null);
             t.equal(data, '<h1>Hola Jekyll</h1>');
             t.end();
@@ -48,7 +48,7 @@ test('engine-munger', function (t) {
         var config = clone(testData['spclAndIntl-js'].config),
             context = clone(testData['spclAndIntl-js'].context);
         resetDust();
-        engineMunger['js'](settings, config)('spcl/jekyll', context, function(err, data) {
+        engineMunger.js(settings, config)('spcl/jekyll', context, function(err, data) {
             t.equal(err, null);
             t.equal(data, '<h1>Hola Hyde</h1>');
             t.end();
@@ -61,7 +61,7 @@ test('engine-munger', function (t) {
         var config = clone(testData['none-dust'].config);
 
         resetDust();
-        engineMunger['dust'](settings, config)('test', {views: 'test/fixtures/templates'}, function(err, data) {
+        engineMunger.dust(settings, config)('test', {views: 'test/fixtures/templates'}, function(err, data) {
             t.equal(err, null);
             t.equal(data, '<h1>Hey Test</h1>');
             t.end();
@@ -75,7 +75,7 @@ test('engine-munger', function (t) {
             context = clone(testData['onlySpcl-dust'].context);
 
         resetDust();
-        engineMunger['dust'](settings, config)('spcl/jekyll', context, function (err, data) {
+        engineMunger.dust(settings, config)('spcl/jekyll', context, function (err, data) {
             t.equal(err, null);
             t.equal(data, '<h1>Hello from hyde</h1>');
             t.end();
@@ -90,7 +90,7 @@ test('engine-munger', function (t) {
             setting = {cache: true};
 
         resetDust();
-        engineMunger['dust'](setting, config)('spcl/jekyll', context, function (err, data) {
+        engineMunger.dust(setting, config)('spcl/jekyll', context, function (err, data) {
             t.equal(err, null);
             t.equal(data, '<h1>Hello from hyde</h1>');
             t.end();
@@ -102,7 +102,7 @@ test('engine-munger', function (t) {
         var config = clone(testData['onlyIntl-dust'].config),
             context = clone(testData['onlyIntl-dust'].context);
         resetDust();
-        engineMunger['dust'](settings, config)('jekyll', context, function(err, data) {
+        engineMunger.dust(settings, config)('jekyll', context, function(err, data) {
             t.equal(err, null);
             t.equal(data, '<h1>Hola Jekyll</h1>');
             t.end();
@@ -116,7 +116,7 @@ test('engine-munger', function (t) {
             context = clone(testData['spclAndIntl-dust'].context);
         resetDust();
 
-        engineMunger['dust'](settings, config)('spcl/jekyll', context, function(err, data) {
+        engineMunger.dust(settings, config)('spcl/jekyll', context, function(err, data) {
             t.equal(err, null);
             t.equal(data, '<h1>Hello from hyde</h1>');
             t.end();
@@ -129,7 +129,7 @@ test('engine-munger', function (t) {
             settings = {cache: true};
         resetDust();
 
-        engineMunger['dust'](settings, config)('spcl/jekyll', context, function(err, data) {
+        engineMunger.dust(settings, config)('spcl/jekyll', context, function(err, data) {
             t.equal(err, null);
             t.equal(data, '<h1>Hello from hyde</h1>');
             t.end();
@@ -141,9 +141,9 @@ test('engine-munger', function (t) {
         var config = clone(testData['onlyIntl-js'].config),
             context = clone(testData['onlyIntl-js'].context);
         resetDust();
-        var engine = engineMunger['js'](settings, config);
+        var engine = engineMunger.js(settings, config);
 
-        engineMunger['js'](settings, config)('jekyll', context, function(err, data) {
+        engineMunger.js(settings, config)('jekyll', context, function(err, data) {
             t.equal(err, null);
             t.equal(data, '<h1>Hola Jekyll</h1>');
             t.end();
@@ -155,9 +155,9 @@ test('engine-munger', function (t) {
             context = clone(testData['onlyIntl-js'].context),
             settings = {cache: true};
         resetDust();
-        var engine = engineMunger['js'](settings, config);
+        var engine = engineMunger.js(settings, config);
 
-        engineMunger['js'](settings, config)('jekyll', context, function(err, data) {
+        engineMunger.js(settings, config)('jekyll', context, function(err, data) {
             t.equal(err, null);
             t.equal(data, '<h1>Hola Jekyll</h1>');
             t.end();
@@ -170,7 +170,7 @@ test('engine-munger', function (t) {
             settings = {cache: true};
         resetDust();
 
-        engineMunger['dust'](settings, config)('spcl/jekyll', context, function(err, data) {
+        engineMunger.dust(settings, config)('spcl/jekyll', context, function(err, data) {
             t.equal(err, null);
             t.equal(data, '<h1>Hello from hyde</h1>');
             t.end();
