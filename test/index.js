@@ -12,7 +12,7 @@ test('engine-munger', function (t) {
         var settings = {cache: false},
             config = testData['none-js'].config;
 
-        engineMunger['js'](settings, config)('test', {views: 'test/fixtures/.build'}, function(err, data) {
+        engineMunger.js(settings, config)('test', {views: 'test/fixtures/.build'}, function(err, data) {
             t.equal(err, null);
             t.equal(data, '<h1>Hey Test</h1>');
             t.end();
@@ -23,7 +23,7 @@ test('engine-munger', function (t) {
         var config = testData['onlySpcl-js'].config;
         var context1 = testData['onlySpcl-js'].context1;
         var context2 = testData['onlySpcl-js'].context2;
-        var engine = engineMunger['js'](settings, config);
+        var engine = engineMunger.js(settings, config);
         engine('spcl/jekyll', context1, function(err, data) {
             t.equal(err, null);
             t.equal(data, '<h1>☃greeting☃ Hyde</h1>');
@@ -38,7 +38,7 @@ test('engine-munger', function (t) {
     t.test('when only internationalization enabled for js engine', function (t) {
         var config = testData['onlyIntl-js'].config,
             context = testData['onlyIntl-js'].context;
-        engineMunger['js'](settings, config)('jekyll', context, function(err, data) {
+        engineMunger.js(settings, config)('jekyll', context, function(err, data) {
             t.equal(err, null);
             t.equal(data, '<h1>Hola Don Jekyll</h1>');
             t.end();
@@ -52,7 +52,7 @@ test('engine-munger', function (t) {
         var context2 = testData['spclAndIntl-js'].context2;
         var context3 = testData['spclAndIntl-js'].context3;
         var context4 = testData['spclAndIntl-js'].context4;
-        var engine = engineMunger['js'](settings, config);
+        var engine = engineMunger.js(settings, config);
         engine('spcl/jekyll', context1, checkContext1);
 
         function checkContext1(err, data) {
@@ -85,7 +85,7 @@ test('engine-munger', function (t) {
 
         var config = testData['none-dust'].config;
 
-        engineMunger['dust'](settings, config)('test', {views: 'test/fixtures/templates'}, function(err, data) {
+        engineMunger.dust(settings, config)('test', {views: 'test/fixtures/templates'}, function(err, data) {
             t.equal(err, null);
             t.equal(data, '<h1>Hey Test</h1>');
             t.end();
@@ -98,7 +98,7 @@ test('engine-munger', function (t) {
         var config = testData['onlySpcl-dust'].config,
             context = testData['onlySpcl-dust'].context;
 
-        engineMunger['dust'](settings, config)('spcl/jekyll', context, function (err, data) {
+        engineMunger.dust(settings, config)('spcl/jekyll', context, function (err, data) {
             t.equal(err, null);
             t.equal(data, '<h1> Hyde</h1>');
             t.end();
@@ -112,7 +112,7 @@ test('engine-munger', function (t) {
             context = testData['onlySpcl-dust'].context,
             setting = {cache: true};
 
-        engineMunger['dust'](setting, config)('spcl/jekyll', context, function (err, data) {
+        engineMunger.dust(setting, config)('spcl/jekyll', context, function (err, data) {
             t.equal(err, null);
             t.equal(data, '<h1> Hyde</h1>');
             t.end();
@@ -123,7 +123,7 @@ test('engine-munger', function (t) {
     t.test('when only internationalization is enabled for dust engine', function (t) {
         var config = testData['onlyIntl-dust'].config,
             context = testData['onlyIntl-dust'].context;
-        engineMunger['dust'](settings, config)('jekyll', context, function(err, data) {
+        engineMunger.dust(settings, config)('jekyll', context, function(err, data) {
             t.equal(err, null);
             t.equal(data, '<h1>Hola Don Jekyll</h1>');
             t.end();
@@ -136,7 +136,7 @@ test('engine-munger', function (t) {
         var config = testData['spclAndIntl-dust'].config,
             context = testData['spclAndIntl-dust'].context;
 
-        engineMunger['dust'](settings, config)('spcl/jekyll', context, function(err, data) {
+        engineMunger.dust(settings, config)('spcl/jekyll', context, function(err, data) {
             t.equal(err, null);
             t.equal(data, '<h1>Hola Señor Hyde</h1>');
             t.end();
@@ -148,7 +148,7 @@ test('engine-munger', function (t) {
             context = testData['spclAndIntl-dust'].context,
             settings = {cache: true};
 
-        engineMunger['dust'](settings, config)('spcl/jekyll', context, function(err, data) {
+        engineMunger.dust(settings, config)('spcl/jekyll', context, function(err, data) {
             t.equal(err, null);
             t.equal(data, '<h1>Hola Señor Hyde</h1>');
             t.end();
@@ -159,9 +159,9 @@ test('engine-munger', function (t) {
     t.test('i18n using view.render for js engine', function(t) {
         var config = testData['onlyIntl-js'].config,
             context = testData['onlyIntl-js'].context;
-        var engine = engineMunger['js'](settings, config);
+        var engine = engineMunger.js(settings, config);
 
-        engineMunger['js'](settings, config)('jekyll', context, function(err, data) {
+        engineMunger.js(settings, config)('jekyll', context, function(err, data) {
             t.equal(err, null);
             t.equal(data, '<h1>Hola Don Jekyll</h1>');
             t.end();
@@ -172,9 +172,9 @@ test('engine-munger', function (t) {
         var config = testData['onlyIntl-js'].config,
             context = testData['onlyIntl-js'].context,
             settings = {cache: true};
-        var engine = engineMunger['js'](settings, config);
+        var engine = engineMunger.js(settings, config);
 
-        engineMunger['js'](settings, config)('jekyll', context, function(err, data) {
+        engineMunger.js(settings, config)('jekyll', context, function(err, data) {
             t.equal(err, null);
             t.equal(data, '<h1>Hola Don Jekyll</h1>');
             t.end();
@@ -186,7 +186,7 @@ test('engine-munger', function (t) {
             context = testData['spclAndIntl-dust'].context,
             settings = {cache: true};
 
-        engineMunger['dust'](settings, config)('spcl/jekyll', context, function(err, data) {
+        engineMunger.dust(settings, config)('spcl/jekyll', context, function(err, data) {
             t.equal(err, null);
             t.equal(data, '<h1>Hola Señor Hyde</h1>');
             t.end();
