@@ -22,7 +22,7 @@ var fs = require('fs'),
     dustjs = require('dustjs-linkedin'),
     resolver = require('file-resolver'),
     path = require('path'),
-    concat = require('concat-stream');
+    bl = require('bl');
 
 
 //config has
@@ -46,10 +46,13 @@ exports.create = function (config) {
             props: props
         };
 
-        out = concat({ encoding: 'string' }, function (data) {
-            var compiledDust;
+        out = bl(function (err, data) {
+            if (err) {
+                return callback(err);
+            }
+
             try {
-                compiledDust = dustjs.compile(data, name);
+                var compiledDust = dustjs.compile(data.toString('utf-8'), name);
                 callback(null, compiledDust);
             } catch (e) {
                 callback(e);
