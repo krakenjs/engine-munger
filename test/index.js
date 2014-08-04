@@ -182,8 +182,8 @@ test('engine-munger', function (t) {
         var config = clone(testData['onlyIntl-js'].config),
             context = clone(testData['onlyIntl-js'].context);
         resetDust();
-        engineMunger['js'](settings, config)('peekaboo', context, function(err, data) {
-            t.equal(err.message, 'Invalid template [peekaboo]');
+        engineMunger.js(settings, config)('peekaboo', context, function(err, data) {
+            t.equal(err.message, 'Could not load template peekaboo');
             t.equal(data, undefined);
             t.end();
         });
@@ -196,8 +196,8 @@ test('engine-munger', function (t) {
         var config = clone(testData['onlyIntl-dust'].config),
             context = clone(testData['onlyIntl-dust'].context);
         resetDust();
-        engineMunger['dust'](settings, config)('invalidTemp', context, function(err, data) {
-            t.equal(err.message, 'Invalid template [invalidTemp]');
+        engineMunger.dust(settings, config)('invalidTemp', context, function(err, data) {
+            t.equal(err.message, 'Expected end tag for elements but it was not found. At line : 5, column : 11');
             t.equal(data, undefined);
             t.end();
         });
