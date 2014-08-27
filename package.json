@@ -12,6 +12,7 @@
     "url": "https://github.com/krakenjs/engine-munger.git"
   },
   "dependencies": {
+    "bcp47": "^1.1.0",
     "bl": "^0.9.0",
     "file-resolver": "^1.0.0",
     "graceful-fs": "~2.0.1",
