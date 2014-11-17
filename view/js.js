@@ -18,7 +18,7 @@
 'use strict';
 
 var fs = require('graceful-fs');
-var util = require('../lib/util.js');
+var util = require('../lib/util');
 var resolver = require('file-resolver');
 
 exports.create = function (config) {
