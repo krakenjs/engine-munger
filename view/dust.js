@@ -19,6 +19,7 @@
 
 var fs = require('fs'),
     localizr = require('localizr'),
+    util = require('../lib/util'),
     dustjs = require('dustjs-linkedin'),
     resolver = require('file-resolver'),
     path = require('path'),
@@ -38,7 +39,7 @@ exports.create = function (config) {
 
         global = context.global;
         locals = context.get('context');
-        locality = locals && locals.locality;
+        locality = util.localityFromLocals(locals);
         props = res.resolve(name, locality).file || i18n.contentPath;
 
         options = {
