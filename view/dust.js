@@ -44,7 +44,8 @@ exports.create = function (config) {
 
         options = {
             src: path.join(config.views, name + '.dust'),
-            props: props
+            props: props,
+            enableMetadata: config.enableMetadata
         };
 
         out = bl(function (err, data) {
