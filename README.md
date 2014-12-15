@@ -1,5 +1,9 @@
-engine-munger [![Build Status](https://travis-ci.org/paypal/kraken-js.png)](https://travis-ci.org/krakenjs/engine-munger)
+engine-munger 
 =============
+
+Lead Maintainer: [Aria Stewart](https://github.com/aredridel)  
+
+[![Build Status](https://travis-ci.org/krakenjs/engine-munger.svg?branch=master)](https://travis-ci.org/krakenjs/engine-munger)
 
 A template engine munging library.
 It looks for appropriate template consolidation library for specified view engine and includes i18n and specialization in the workflow.
