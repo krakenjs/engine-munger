@@ -17,13 +17,13 @@
  \*───────────────────────────────────────────────────────────────────────────*/
 'use strict';
 
-var fs = require('fs'),
-    localizr = require('localizr'),
+var localizr = require('localizr'),
     util = require('../lib/util'),
     dustjs = require('dustjs-linkedin'),
     resolver = require('file-resolver'),
     path = require('path'),
-    bl = require('bl');
+    bl = require('bl'),
+    VError = require('verror');
 
 
 //config has
@@ -57,7 +57,7 @@ exports.create = function (config) {
                 var compiledDust = dustjs.compile(data.toString('utf-8'), name);
                 callback(null, compiledDust);
             } catch (e) {
-                callback(e);
+                callback(new VError(e, 'Problem rendering dust template named %s', name));
             }
         });
 
