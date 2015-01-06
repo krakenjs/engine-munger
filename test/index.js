@@ -191,13 +191,13 @@ test('engine-munger', function (t) {
     });
 
 
-    t.test('i18n dust engine- catch error while compiling invalid dust', function(err, data) {
+    t.test('i18n dust engine- catch error while compiling invalid dust and report name of broken template', function(err, data) {
 
         var config = clone(testData['onlyIntl-dust'].config),
             context = clone(testData['onlyIntl-dust'].context);
         resetDust();
         engineMunger.dust(settings, config)('invalidTemp', context, function(err, data) {
-            t.equal(err.message, 'Expected end tag for elements but it was not found. At line : 5, column : 11');
+            t.equal(err.message, 'Problem rendering dust template named invalidTemp: Expected end tag for elements but it was not found. At line : 5, column : 11');
             t.equal(data, undefined);
             t.end();
         });
