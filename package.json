@@ -16,7 +16,7 @@
     "file-resolver": "^1.0.0",
     "graceful-fs": "~2.0.1",
     "karka": "~0.0.1",
-    "localizr": "~1.0.0",
+    "localizr": "^1.0.4",
     "verror": "^1.6.0"
   },
   "devDependencies": {
