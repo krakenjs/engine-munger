@@ -8,6 +8,8 @@ Lead Maintainer: [Aria Stewart](https://github.com/aredridel)
 A template engine munging library.
 It looks for appropriate template consolidation library for specified view engine and includes i18n and specialization in the workflow.
 
+Note: If you use specialization features, you must use dustjs before 2.6.0.
+
 ###### What does i18n mean ?
 Localization of included content tags for a specified locale. Currently supported only for dust templating engine and internally uses the module [localizr](https://github.com/krakenjs/localizr) for translating content tags included in the templates
 
