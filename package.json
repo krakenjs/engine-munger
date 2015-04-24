@@ -34,7 +34,7 @@
     "adaro": "~0.1.5"
   },
   "scripts": {
-    "test": "tape test/*.js",
+    "test": "tape test/*.js && npm run lint",
     "cover": "istanbul cover tape -- test/*.js",
     "lint": "jshint -c .jshintrc index.js lib/ view/"
   }
