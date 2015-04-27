@@ -19,26 +19,24 @@
 
 var fs = require('graceful-fs');
 var util = require('../lib/util');
-var resolver = require('file-resolver');
+var searchLocales = require('../lib/searchLocales.js');
 
 exports.create = function (config) {
 
-    var res,
-        defaultLocale = config.i18n.fallback;
-
-    res = resolver.create({ root: config.views, ext: 'js', fallback: defaultLocale });
+    var defaultLocale = config.i18n.fallback;
 
     return function onLoad(name, context, callback) {
         var locals, view;
 
         locals = context.get('context');
 
-        view = res.resolve(name, util.localityFromLocals(locals));
-        if (!view.file) {
-            callback(new Error('Could not load template ' + name));
-            return;
-        }
-        fs.readFile(view.file, 'utf8', callback);
+        searchLocales(config.views, name + '.js', [util.localityFromLocals(locals), defaultLocale], function (err, file) {
+            if (err) {
+                return callback(new Error('Could not load template ' + name));
+            } else {
+                fs.readFile(file, 'utf8', callback);
+            }
+        });
     };
 
 };

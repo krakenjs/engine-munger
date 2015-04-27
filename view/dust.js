@@ -20,10 +20,10 @@
 var localizr = require('localizr'),
     util = require('../lib/util'),
     dustjs = require('dustjs-linkedin'),
-    resolver = require('file-resolver'),
     path = require('path'),
     bl = require('bl'),
-    VError = require('verror');
+    VError = require('verror'),
+    searchLocales = require('../lib/searchLocales.js');
 
 
 //config has
@@ -31,8 +31,7 @@ var localizr = require('localizr'),
 //baseTemplatePath
 
 exports.create = function (config) {
-    var i18n = config.i18n,
-        res = resolver.create({ root: i18n.contentPath, ext: 'properties', fallback: i18n.fallback});
+    var i18n = config.i18n;
     return function onLoad(name, context, callback) {
 
         var out, options, global, locals, locality, props;
@@ -40,28 +39,31 @@ exports.create = function (config) {
         global = context.global;
         locals = context.get('context');
         locality = util.localityFromLocals(locals);
-        props = res.resolve(name, locality).file || i18n.contentPath;
+        searchLocales(i18n.contentPath, name + '.properties', [locality, i18n.fallback], function (err, props) {
+            props = props || i18n.contentPath;
 
-        options = {
-            src: path.join(config.views, name + '.dust'),
-            props: props,
-            enableMetadata: config.enableMetadata
-        };
+            options = {
+                src: path.join(config.views, name + '.dust'),
+                props: props,
+                enableMetadata: config.enableMetadata
+            };
 
-        out = bl(function (err, data) {
-            if (err) {
-                return callback(err);
-            }
+            out = bl(function (err, data) {
+                if (err) {
+                    return callback(err);
+                }
 
-            try {
-                var compiledDust = dustjs.compile(data.toString('utf-8'), name);
-                callback(null, compiledDust);
-            } catch (e) {
-                callback(new VError(e, 'Problem rendering dust template named %s', name));
-            }
+                try {
+                    var compiledDust = dustjs.compile(data.toString('utf-8'), name);
+                    callback(null, compiledDust);
+                } catch (e) {
+                    callback(new VError(e, 'Problem rendering dust template named %s', name));
+                }
+            });
+
+            localizr.createReadStream(options).pipe(out);
         });
-
-        localizr.createReadStream(options).pipe(out);
     };
 };
+
 
