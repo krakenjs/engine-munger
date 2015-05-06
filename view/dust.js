@@ -19,7 +19,6 @@
 
 var localizr = require('localizr'),
     util = require('../lib/util'),
-    dustjs = require('dustjs-linkedin'),
     resolver = require('file-resolver'),
     path = require('path'),
     bl = require('bl'),
