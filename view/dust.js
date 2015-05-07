@@ -51,8 +51,9 @@ exports.create = function (config, dustjs) {
             }
 
             try {
-                var compiledDust = dustjs.compile(data.toString('utf-8'), name);
-                callback(null, compiledDust);
+                var tmpl = dustjs.loadSource(dustjs.compile(data.toString('utf-8'), name));
+                // FIXME: update template name to include locale, test caching, etc.
+                callback(null, tmpl);
             } catch (e) {
                 callback(new VError(e, 'Problem rendering dust template named %s', name));
             }
