@@ -21,12 +21,18 @@ test('engine-munger', function (t) {
     });
 
     t.test('when only specialization enabled for js engine', function (t) {
-        var config = clone(testData['onlySpcl-js'].config),
-            context = clone(testData['onlySpcl-js'].context);
-        engineMunger['js'](settings, config)('spcl/jekyll', context, function(err, data) {
+        var config = clone(testData['onlySpcl-js'].config);
+        var context1 = clone(testData['onlySpcl-js'].context1);
+        var context2 = clone(testData['onlySpcl-js'].context2);
+        var engine = engineMunger['js'](settings, config);
+        engine('spcl/jekyll', context1, function(err, data) {
             t.equal(err, null);
-            t.equal(data, '<h1>Hola Hyde</h1>');
-            t.end();
+            t.equal(data, '<h1>Hello from hyde</h1>');
+            engine('spcl/jekyll', context2, function(err, data) {
+                t.equal(err, null);
+                t.equal(data, '<h1>hello from jekyll</h1>');
+                t.end();
+            });
         });
     });
 
