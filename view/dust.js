@@ -34,12 +34,12 @@ exports.create = function (config, dustjs) {
         res = resolver.create({ root: i18n.contentPath, ext: 'properties', fallback: i18n.fallback});
     return function onLoad(name, options, callback) {
 
-        var out, options, global, locals, locality, props;
+        var out, localizrOptions, global, locals, locality, props;
 
         locality = util.localityFromLocals(options);
         props = res.resolve(name, locality).file || i18n.contentPath;
 
-        options = {
+        localizrOptions = {
             src: path.join(config.views, name + '.dust'),
             props: props,
             enableMetadata: config.enableMetadata
@@ -58,7 +58,7 @@ exports.create = function (config, dustjs) {
             }
         });
 
-        localizr.createReadStream(options).pipe(out);
+        localizr.createReadStream(localizrOptions).pipe(out);
     };
 };
 

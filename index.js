@@ -33,9 +33,7 @@ exports.dust = function (setting, config) {
     // For i18n we silently switch to the JS engine for all requests, passing config
     renderer = configs.i18n ? engine.js(settings): engine.dust(settings);
 
-    if (configs['view engine'] === 'dust') {
-        munger.wrapDustOnLoad('dust', renderer.dust, configs);
-    }
+    munger.wrapDustOnLoad('dust', renderer.dust, configs);
 
     return munger.wrapEngine(configs, renderer);
 };
@@ -51,10 +49,7 @@ exports.js = function (setting, config) {
 
     renderer = engine.js(settings);
 
-    if (configs['view engine'] === 'js') {
-        munger.wrapDustOnLoad('js', renderer.dust, configs);
-    }
+    munger.wrapDustOnLoad('js', renderer.dust, configs);
 
-    return (configs.specialization) ? munger.wrapEngine(configs, renderer) : renderer;
+    return munger.wrapEngine(configs, renderer);
 };
-
