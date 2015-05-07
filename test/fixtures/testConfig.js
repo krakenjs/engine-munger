@@ -20,8 +20,12 @@ module.exports = {
                 ]
             }
         },
-        'context': {
+        'context1': {
             'whoAmI': 'badGuy',
+            views: 'test/fixtures/.build'
+        },
+        'context2': {
+            'whoAmI': 'goodGuy',
             views: 'test/fixtures/.build'
         }
     },
