@@ -29,14 +29,12 @@ exports.create = function (config, dustjs) {
     res = resolver.create({ root: config.views, ext: 'js', fallback: defaultLocale });
 
     return function onLoad(name, options, callback) {
-        var locals, view;
+        var view = res.resolve(name, util.localityFromLocals(options));
 
-
-        view = res.resolve(name, util.localityFromLocals(options));
         if (!view.file) {
-            callback(new Error('Could not load template ' + name));
-            return;
+            return callback(new Error('Could not load template ' + name));
         }
+
         fs.readFile(view.file, 'utf8', function (err, data) {
             if (err) {
                 return callback(err);
