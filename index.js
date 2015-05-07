@@ -30,16 +30,10 @@ exports.dust = function (setting, config) {
         return engine.dust(settings);
     }
 
-    // Disabling cache
-    // since we add our own caching layer below. (Clone it first so we don't muck with the original object.)
-    settings.cache = false;
-
     // For i18n we silently switch to the JS engine for all requests, passing config
     renderer = configs.i18n ? engine.js(settings): engine.dust(settings);
 
-    if (configs['view engine'] === 'dust') {
-        munger.wrapDustOnLoad('dust', renderer.dust, configs, settings.cache);
-    }
+    munger.wrapDustOnLoad('dust', renderer.dust, configs);
 
     return munger.wrapEngine(configs, renderer);
 };
@@ -53,15 +47,9 @@ exports.js = function (setting, config) {
         return engine.js(settings);
     }
 
-    // Disabling cache
-    // since we add our own caching layer below. (Clone it first so we don't muck with the original object.)
-    settings.cache = false;
     renderer = engine.js(settings);
 
-    if (configs['view engine'] === 'js') {
-        munger.wrapDustOnLoad('js', renderer.dust, configs, settings.cache);
-    }
+    munger.wrapDustOnLoad('js', renderer.dust, configs);
 
-    return (configs.specialization) ? munger.wrapEngine(configs, renderer) : renderer;
+    return munger.wrapEngine(configs, renderer);
 };
-

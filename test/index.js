@@ -1,6 +1,5 @@
 'use strict';
-var dustjs = require('dustjs-linkedin'),
-    test = require('tape'),
+var test = require('tape'),
     engineMunger = require('../index'),
     testData = require('./fixtures/testConfig'),
     freshy = require('freshy');

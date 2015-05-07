@@ -21,24 +21,30 @@ var fs = require('graceful-fs');
 var util = require('../lib/util');
 var resolver = require('file-resolver');
 
-exports.create = function (config) {
+exports.create = function (config, dustjs) {
 
     var res,
         defaultLocale = config.i18n.fallback;
 
     res = resolver.create({ root: config.views, ext: 'js', fallback: defaultLocale });
 
-    return function onLoad(name, context, callback) {
+    return function onLoad(name, options, callback) {
         var locals, view;
 
-        locals = context.get('context');
 
-        view = res.resolve(name, util.localityFromLocals(locals));
+        view = res.resolve(name, util.localityFromLocals(options));
         if (!view.file) {
             callback(new Error('Could not load template ' + name));
             return;
         }
-        fs.readFile(view.file, 'utf8', callback);
+        fs.readFile(view.file, 'utf8', function (err, data) {
+            if (err) {
+                return callback(err);
+            } else {
+                var tmpl = dustjs.loadSource(data);
+                return callback(null, tmpl);
+            }
+        });
     };
 
 };
