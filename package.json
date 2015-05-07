@@ -12,7 +12,7 @@
     "url": "https://github.com/krakenjs/engine-munger.git"
   },
   "dependencies": {
-    "adaro": "1.0.0-0",
+    "adaro": "1.0.0-2",
     "bl": "^0.9.0",
     "file-resolver": "^1.0.0",
     "graceful-fs": "~2.0.1",

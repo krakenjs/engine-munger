@@ -29,16 +29,14 @@ var localizr = require('localizr'),
 //fallbackLocale
 //baseTemplatePath
 
-exports.create = function (config) {
+exports.create = function (config, dustjs) {
     var i18n = config.i18n,
         res = resolver.create({ root: i18n.contentPath, ext: 'properties', fallback: i18n.fallback});
-    return function onLoad(name, context, callback) {
+    return function onLoad(name, options, callback) {
 
         var out, options, global, locals, locality, props;
 
-        global = context.global;
-        locals = context.get('context');
-        locality = util.localityFromLocals(locals);
+        locality = util.localityFromLocals(options);
         props = res.resolve(name, locality).file || i18n.contentPath;
 
         options = {
