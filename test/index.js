@@ -50,16 +50,34 @@ test('engine-munger', function (t) {
         var config = testData['spclAndIntl-js'].config;
         var context1 = testData['spclAndIntl-js'].context1;
         var context2 = testData['spclAndIntl-js'].context2;
+        var context3 = testData['spclAndIntl-js'].context3;
+        var context4 = testData['spclAndIntl-js'].context4;
         var engine = engineMunger['js'](settings, config);
-        engine('spcl/jekyll', context1, function(err, data) {
+        engine('spcl/jekyll', context1, checkContext1);
+
+        function checkContext1(err, data) {
             t.equal(err, null);
             t.equal(data, '<h1>Hola Señor Hyde</h1>');
-            engine('spcl/jekyll', context2, function(err, data) {
-                t.equal(err, null);
-                t.equal(data, '<h1>Hola Don Jekyll</h1>');
-                t.end();
-            });
-        });
+            engine('spcl/jekyll', context2, checkContext2);
+        }
+
+        function checkContext2(err, data) {
+            t.equal(err, null);
+            t.equal(data, '<h1>Hola Don Jekyll</h1>');
+            engine('spcl/jekyll', context3, checkContext3);
+        }
+
+        function checkContext3(err, data) {
+            t.equal(err, null);
+            t.equal(data, '<h1>Hello Mister Hyde</h1>');
+            engine('spcl/jekyll', context4, checkContext4);
+        };
+
+        function checkContext4(err, data) {
+            t.equal(err, null);
+            t.equal(data, '<h1>Hello Doctor Jekyll</h1>');
+            t.end();
+        }
 
     });
 

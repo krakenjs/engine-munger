@@ -78,6 +78,20 @@ module.exports = {
             context: {
                 locality: 'es_US'
             }
+        },
+        'context3': {
+            views: 'test/fixtures/.build',
+            whoAmI: 'badGuy',
+            context: {
+                locality: 'en_US'
+            }
+        },
+        'context4': {
+            views: 'test/fixtures/.build',
+            whoAmI: 'goodGuy',
+            context: {
+                locality: 'en_US'
+            }
         }
     },
     'none-dust': {
