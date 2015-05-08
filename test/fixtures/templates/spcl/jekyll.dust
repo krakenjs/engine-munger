@@ -1,1 +1,1 @@
-<h1>hello from jekyll</h1>
+<h1>{@pre type="content" key="greeting" /} Jekyll</h1>

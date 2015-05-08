@@ -26,10 +26,10 @@ test('engine-munger', function (t) {
         var engine = engineMunger['js'](settings, config);
         engine('spcl/jekyll', context1, function(err, data) {
             t.equal(err, null);
-            t.equal(data, '<h1>Hello from hyde</h1>');
+            t.equal(data, '<h1>☃greeting☃ Hyde</h1>');
             engine('spcl/jekyll', context2, function(err, data) {
                 t.equal(err, null);
-                t.equal(data, '<h1>hello from jekyll</h1>');
+                t.equal(data, '<h1>☃greeting☃ Jekyll</h1>');
                 t.end();
             });
         });
@@ -40,19 +40,25 @@ test('engine-munger', function (t) {
             context = clone(testData['onlyIntl-js'].context);
         engineMunger['js'](settings, config)('jekyll', context, function(err, data) {
             t.equal(err, null);
-            t.equal(data, '<h1>Hola Jekyll</h1>');
+            t.equal(data, '<h1>Hola Don Jekyll</h1>');
             t.end();
         });
 
     });
 
     t.test('when specialization and internationalization enabled for js engine', function (t) {
-        var config = clone(testData['spclAndIntl-js'].config),
-            context = clone(testData['spclAndIntl-js'].context);
-        engineMunger['js'](settings, config)('spcl/jekyll', context, function(err, data) {
+        var config = clone(testData['spclAndIntl-js'].config);
+        var context1 = clone(testData['spclAndIntl-js'].context1);
+        var context2 = clone(testData['spclAndIntl-js'].context2);
+        var engine = engineMunger['js'](settings, config);
+        engine('spcl/jekyll', context1, function(err, data) {
             t.equal(err, null);
-            t.equal(data, '<h1>Hola Hyde</h1>');
-            t.end();
+            t.equal(data, '<h1>Hola Señor Hyde</h1>');
+            engine('spcl/jekyll', context2, function(err, data) {
+                t.equal(err, null);
+                t.equal(data, '<h1>Hola Don Jekyll</h1>');
+                t.end();
+            });
         });
 
     });
@@ -76,7 +82,7 @@ test('engine-munger', function (t) {
 
         engineMunger['dust'](settings, config)('spcl/jekyll', context, function (err, data) {
             t.equal(err, null);
-            t.equal(data, '<h1>Hello from hyde</h1>');
+            t.equal(data, '<h1> Hyde</h1>');
             t.end();
         });
 
@@ -90,7 +96,7 @@ test('engine-munger', function (t) {
 
         engineMunger['dust'](setting, config)('spcl/jekyll', context, function (err, data) {
             t.equal(err, null);
-            t.equal(data, '<h1>Hello from hyde</h1>');
+            t.equal(data, '<h1> Hyde</h1>');
             t.end();
         });
 
@@ -101,7 +107,7 @@ test('engine-munger', function (t) {
             context = clone(testData['onlyIntl-dust'].context);
         engineMunger['dust'](settings, config)('jekyll', context, function(err, data) {
             t.equal(err, null);
-            t.equal(data, '<h1>Hola Jekyll</h1>');
+            t.equal(data, '<h1>Hola Don Jekyll</h1>');
             t.end();
         });
 
@@ -114,7 +120,7 @@ test('engine-munger', function (t) {
 
         engineMunger['dust'](settings, config)('spcl/jekyll', context, function(err, data) {
             t.equal(err, null);
-            t.equal(data, '<h1>Hello from hyde</h1>');
+            t.equal(data, '<h1>Hola Señor Hyde</h1>');
             t.end();
         });
     });
@@ -126,7 +132,7 @@ test('engine-munger', function (t) {
 
         engineMunger['dust'](settings, config)('spcl/jekyll', context, function(err, data) {
             t.equal(err, null);
-            t.equal(data, '<h1>Hello from hyde</h1>');
+            t.equal(data, '<h1>Hola Señor Hyde</h1>');
             t.end();
         });
     });
@@ -139,7 +145,7 @@ test('engine-munger', function (t) {
 
         engineMunger['js'](settings, config)('jekyll', context, function(err, data) {
             t.equal(err, null);
-            t.equal(data, '<h1>Hola Jekyll</h1>');
+            t.equal(data, '<h1>Hola Don Jekyll</h1>');
             t.end();
         });
     });
@@ -152,7 +158,7 @@ test('engine-munger', function (t) {
 
         engineMunger['js'](settings, config)('jekyll', context, function(err, data) {
             t.equal(err, null);
-            t.equal(data, '<h1>Hola Jekyll</h1>');
+            t.equal(data, '<h1>Hola Don Jekyll</h1>');
             t.end();
         });
     });
@@ -164,7 +170,7 @@ test('engine-munger', function (t) {
 
         engineMunger['dust'](settings, config)('spcl/jekyll', context, function(err, data) {
             t.equal(err, null);
-            t.equal(data, '<h1>Hello from hyde</h1>');
+            t.equal(data, '<h1>Hola Señor Hyde</h1>');
             t.end();
         });
     });

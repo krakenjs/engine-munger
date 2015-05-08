@@ -65,9 +65,16 @@ module.exports = {
 
             }
         },
-        'context': {
+        'context1': {
             views: 'test/fixtures/.build',
             whoAmI: 'badGuy',
+            context: {
+                locality: 'es_US'
+            }
+        },
+        'context2': {
+            views: 'test/fixtures/.build',
+            whoAmI: 'goodGuy',
             context: {
                 locality: 'es_US'
             }
