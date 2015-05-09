@@ -204,6 +204,18 @@ test('engine-munger', function (t) {
 
     });
 
+    t.test('i81n dust engine should give good errors when properties file not found', function (t) {
+        var config = clone(testData['onlyIntl-dust'].config),
+            context = clone(testData['onlyIntl-dust'].context);
+        resetDust();
+        engineMunger.dust(settings, config)('localizationNotFound', context, function(err, data) {
+            t.equal(err.message, "Could not load bundle 'test/fixtures/properties': Cannot find module './'");
+            t.equal(data, undefined);
+            t.end();
+        });
+
+    });
+
 });
 
 function resetDust() {
