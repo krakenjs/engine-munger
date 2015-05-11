@@ -16,8 +16,8 @@
     "file-resolver": "^1.0.0",
     "graceful-fs": "~2.0.1",
     "karka": "~0.0.1",
-    "localizr": "~1.0.0",
-    "verror": "^1.6.0"
+    "verror": "^1.6.0",
+    "localizr": "^1.0.0"
   },
   "devDependencies": {
     "tape": "~2.4.2",
@@ -37,5 +37,27 @@
     "test": "tape test/*.js && npm run lint",
     "cover": "istanbul cover tape -- test/*.js",
     "lint": "jshint -c .jshintrc index.js lib/ view/"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/krakenjs/engine-munger/issues"
+  },
+  "homepage": "https://github.com/krakenjs/engine-munger",
+  "maintainers": [
+    {
+      "name": "pvenkatakrishnan",
+      "email": "pvenkatakrishnan@paypal.com"
+    },
+    {
+      "name": "totherik",
+      "email": "totherik@gmail.com"
+    },
+    {
+      "name": "jeffharrell",
+      "email": "jeff@juxtadesign.com"
+    },
+    {
+      "name": "grawk",
+      "email": "mattedelman@gmail.com"
+    }
+  ]
 }
