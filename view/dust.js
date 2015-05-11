@@ -40,6 +40,9 @@ exports.create = function (config) {
         global = context.global;
         locals = context.get('context');
         locality = util.localityFromLocals(locals);
+        if (!res.resolve(name, locality).file) {
+          throw new Error("Unable to find resource '" + name + ".properties'");
+        }
         props = res.resolve(name, locality).file || i18n.contentPath;
 
         options = {
