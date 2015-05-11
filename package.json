@@ -37,5 +37,27 @@
     "test": "tape test/*.js && npm run lint",
     "cover": "istanbul cover tape -- test/*.js",
     "lint": "jshint -c .jshintrc index.js lib/ view/"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/krakenjs/engine-munger/issues"
+  },
+  "homepage": "https://github.com/krakenjs/engine-munger",
+  "maintainers": [
+    {
+      "name": "pvenkatakrishnan",
+      "email": "pvenkatakrishnan@paypal.com"
+    },
+    {
+      "name": "totherik",
+      "email": "totherik@gmail.com"
+    },
+    {
+      "name": "jeffharrell",
+      "email": "jeff@juxtadesign.com"
+    },
+    {
+      "name": "grawk",
+      "email": "mattedelman@gmail.com"
+    }
+  ]
 }
