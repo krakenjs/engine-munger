@@ -53,3 +53,5 @@ exports.js = function (setting, config) {
 
     return munger.wrapEngine(configs, renderer);
 };
+
+exports.setupViewClass = require('./lib/expressView');
