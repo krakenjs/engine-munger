@@ -14,11 +14,12 @@
   "dependencies": {
     "adaro": "1.0.0-2",
     "bl": "^0.9.0",
+    "debuglog": "^1.0.1",
     "file-resolver": "^1.0.0",
     "graceful-fs": "~2.0.1",
     "karka": "~0.0.1",
-    "verror": "^1.6.0",
-    "localizr": "^1.0.0"
+    "localizr": "^1.0.0",
+    "verror": "^1.6.0"
   },
   "devDependencies": {
     "tape": "~2.4.2",
