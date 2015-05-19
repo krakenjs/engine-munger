@@ -1,5 +1,5 @@
 'use strict';
-var test = require('tape'),
+var test = require('tap').test,
     engineMunger = require('../index'),
     testData = require('./fixtures/testConfig'),
     freshy = require('freshy');
