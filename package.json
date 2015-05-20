@@ -26,11 +26,12 @@
     "jshint": "~2.4.3",
     "mockery": "~1.4.0",
     "freshy": "0.0.2",
+    "nyc": "^2.0.5",
     "tap": "^1.0.8"
   },
   "scripts": {
-    "test": "tap test/*.js && npm run lint",
-    "cover": "istanbul cover tap -- test/*.js",
+    "test": "nyc tap test/*.js && npm run lint",
+    "cover": "nyc report",
     "lint": "jshint -c .jshintrc index.js lib/ view/"
   },
   "bugs": {
