@@ -22,7 +22,10 @@ test('view class lookup i18n', function (t) {
     var View = makeViewClass({
         ".js": {
             "i18n": {
-                "fallback": "en-US"
+                "fallback": "en-US",
+                "formatPath": function (locale) {
+                    return path.join(locale.langtag.region, locale.langtag.language.language);
+                }
             }
         }
     });
@@ -35,7 +38,7 @@ test('view class lookup i18n', function (t) {
     });
     v.lookup('test.js', {}, function (err, result) {
         t.error(err);
-        t.equal(result, path.resolve(__dirname, 'fixtures/templates/US/en/test.js'));
+        t.equal(result, path.resolve(__dirname, 'fixtures/.build/US/en/test.js'));
         t.end();
     });
 });
