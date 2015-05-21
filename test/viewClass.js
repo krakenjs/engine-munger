@@ -1,12 +1,10 @@
 var test = require('tap').test;
-var MungedView = require('../lib/expressView').makeViewClass({});
-var setupViewClass = require('../lib/expressView');
-var express = require('express');
-var supertest = require('supertest');
+var makeViewClass = require('../lib/expressView').makeViewClass;
 var path = require('path');
 
-test('view class lookup', function (t) {
-    var v = new MungedView('test', {
+test('view class lookup plain', function (t) {
+    var View = makeViewClass({});
+    var v = new View('test', {
         root: path.resolve(__dirname, 'fixtures/templates'),
         defaultEngine: '.dust',
         engines: {
@@ -20,8 +18,31 @@ test('view class lookup', function (t) {
     });
 });
 
+test('view class lookup i18n', function (t) {
+    var View = makeViewClass({
+        ".js": {
+            "i18n": {
+                "fallback": "en-US"
+            }
+        }
+    });
+    var v = new View('test', {
+        root: path.resolve(__dirname, 'fixtures/.build'),
+        defaultEngine: '.js',
+        engines: {
+            '.js': fakeEngine
+        }
+    });
+    v.lookup('test.js', {}, function (err, result) {
+        t.error(err);
+        t.equal(result, path.resolve(__dirname, 'fixtures/templates/US/en/test.js'));
+        t.end();
+    });
+});
+
 test('view class lookupMain', function (t) {
-    var v = new MungedView('test', {
+    var View = makeViewClass({});
+    var v = new View('test', {
         root: path.resolve(__dirname, 'fixtures/templates'),
         defaultEngine: '.dust',
         engines: {
@@ -33,36 +54,6 @@ test('view class lookupMain', function (t) {
         t.equal(v.path, path.resolve(__dirname, 'fixtures/templates/test.dust'));
         t.end();
     });
-});
-
-test('first-run middleware', function (t) {
-    var app = express();
-    var view, afterView;
-
-    app.set('view engine', 'fake');
-    app.engine('fake', fakeEngine);
-    app.use(function (req, res, next) {
-        view = app.get('view');
-        t.ok(view);
-        next();
-    });
-    app.use(setupViewClass({stuff: true}));
-    app.use(function (req, res, next) {
-        afterView = app.get('view');
-        t.ok(afterView);
-        next();
-    });
-    app.get('/', function (req, res) {
-        res.end('got it');
-    });
-
-    supertest(app).get('/').end(function (err, res) {
-        t.error(err);
-        t.ok(res);
-        t.notEqual(afterView, view);
-        t.end();
-    });
-
 });
 
 function fakeEngine() {
