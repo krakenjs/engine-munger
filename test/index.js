@@ -4,6 +4,7 @@ var engineMunger = require('../index');
 var freshy = require('freshy');
 var makeViewClass = require('../lib/expressView').makeViewClass;
 var path = require('path');
+var adaro = require('adaro');
 
 test('engine-munger', function (t) {
     var settings = {cache: false};
@@ -210,7 +211,7 @@ function makeView(ext, tmpl, config) {
     viewConf[ext] = config;
     var View = makeViewClass(viewConf);
     var engines = {};
-    engines['.' + ext] = engineMunger[ext]();
+    engines['.' + ext] = adaro[ext]();
     return new View(tmpl, {
         root: ext == 'js' ? path.resolve(__dirname, 'fixtures/.build') : path.resolve(__dirname, 'fixtures/templates'),
         defaultEngine: '.' + ext,
