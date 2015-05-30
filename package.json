@@ -12,7 +12,6 @@
     "url": "https://github.com/krakenjs/engine-munger.git"
   },
   "dependencies": {
-    "adaro": "1.0.0-2",
     "aproba": "^1.0.1",
     "bcp47": "^1.1.2",
     "bcp47-stringify": "^1.0.0",
@@ -27,6 +26,7 @@
     "verror": "^1.6.0"
   },
   "devDependencies": {
+    "adaro": "1.0.0-6",
     "freshy": "0.0.2",
     "istanbul": "~0.2.4",
     "jshint": "~2.4.3",

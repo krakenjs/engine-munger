@@ -17,10 +17,5 @@
  \*───────────────────────────────────────────────────────────────────────────*/
 
 'use strict';
-var adaro = require('adaro');
-
-exports.dust = adaro.dust;
-
-exports.js = adaro.js;
 
 exports.setupViewClass = require('./lib/expressView');
