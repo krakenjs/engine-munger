@@ -17,41 +17,10 @@
  \*───────────────────────────────────────────────────────────────────────────*/
 
 'use strict';
-var engine = require('adaro'),
-    munger = require('./lib/munger');
+var adaro = require('adaro');
 
+exports.dust = adaro.dust;
 
-exports.dust = function (setting, config) {
-    var settings =  (arguments.length > 1) ? setting : {},
-        configs = (arguments.length > 1) ? config : setting,
-        renderer;
-
-    if (!configs || !(configs.specialization || configs.i18n)) {
-        return engine.dust(settings);
-    }
-
-    // For i18n we silently switch to the JS engine for all requests, passing config
-    renderer = configs.i18n ? engine.js(settings): engine.dust(settings);
-
-    munger.wrapDustOnLoad('dust', renderer.dust, configs);
-
-    return munger.wrapEngine(configs, renderer);
-};
-
-exports.js = function (setting, config) {
-    var settings =  (arguments.length > 1) ? setting : {},
-        configs = (arguments.length > 1) ? config : setting,
-        renderer;
-
-    if (!configs || !(configs.specialization || configs.i18n)) {
-        return engine.js(settings);
-    }
-
-    renderer = engine.js(settings);
-
-    munger.wrapDustOnLoad('js', renderer.dust, configs);
-
-    return munger.wrapEngine(configs, renderer);
-};
+exports.js = adaro.js;
 
 exports.setupViewClass = require('./lib/expressView');
