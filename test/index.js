@@ -1,8 +1,7 @@
 'use strict';
 var test = require('tap').test;
-var engineMunger = require('../index');
 var freshy = require('freshy');
-var makeViewClass = require('../lib/expressView').makeViewClass;
+var makeViewClass = require('../');
 var path = require('path');
 var adaro = require('adaro');
 

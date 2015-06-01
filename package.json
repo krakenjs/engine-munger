@@ -38,7 +38,7 @@
   "scripts": {
     "test": "nyc tap test/*.js && npm run lint",
     "cover": "nyc report",
-    "lint": "jshint -c .jshintrc index.js lib/"
+    "lint": "jshint -c .jshintrc index.js"
   },
   "bugs": {
     "url": "https://github.com/krakenjs/engine-munger/issues"
