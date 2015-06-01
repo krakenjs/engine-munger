@@ -191,7 +191,7 @@ test('engine-munger', function (t) {
         };
 
         makeView('dust', 'invalidTemp', config).render(context, function(err, data) {
-            t.equal(err.message, 'Problem rendering dust template named invalidTemp: Expected end tag for elements but it was not found. At line : 5, column : 11');
+            t.match(err.message, /Problem rendering dust template ".*": Expected end tag for elements but it was not found. At line : 5, column : 11/);
             t.equal(data, undefined);
             t.end();
         });
