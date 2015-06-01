@@ -1,6 +1,6 @@
 {
   "name": "engine-munger",
-  "version": "0.2.6",
+  "version": "1.0.0-2",
   "description": "An engine munger for express apps.",
   "main": "index.js",
   "author": {
