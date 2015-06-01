@@ -7,6 +7,10 @@
     "name": "Poornima Venkatakrishnan",
     "email": "pvenkatakrishnan@paypal.com"
   },
+  "contributors": {
+    "name": "Aria Stewart",
+    "email": "ariastewart@paypal.com"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/krakenjs/engine-munger.git"
