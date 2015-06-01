@@ -210,6 +210,52 @@ test('engine-munger', function (t) {
         });
     });
 
+    t.test('multiple roots - found', function (t) {
+        var view = makeView('dust', 'test', {
+            root: [
+                path.resolve(__dirname, 'fixtures', 'not-here'),
+                path.resolve(__dirname, 'fixtures', 'templates')
+            ]
+        });
+        view.lookupMain({}, function (err) {
+            t.error(err);
+            t.equal(view.path, path.resolve(__dirname, 'fixtures', 'templates', 'test.dust'));
+            t.end();
+        });
+    });
+
+    t.test('multiple roots - not found', function (t) {
+        var path1 = path.resolve(__dirname, 'fixtures', 'not-here');
+        var path2 = path.resolve(__dirname, 'fixtures', 'nor-there')
+        var view = makeView('dust', 'test', {
+            root: [
+                path1,
+                path2
+            ]
+        });
+        view.lookupMain({}, function (err) {
+            t.match(err.message, /Failed to lookup view "test.dust"/);
+            t.match(err.message, /not-here/);
+            t.match(err.message, /nor-there/);
+            t.same(view.path, true);
+            t.end();
+        });
+    });
+
+    t.test('multiple roots - deferred stat', function (t) {
+        var view = makeView('dust', 'test', { });
+        var pending = 0;
+        for (var i = 0; i < 11; i++) {
+            pending++;
+            view.lookup('test', {}, function (err) {
+                t.error(err);
+                if (--pending === 0) {
+                    t.end();
+                }
+            });
+        }
+    });
+
 });
 
 function makeView(ext, tmpl, config) {
@@ -219,7 +265,7 @@ function makeView(ext, tmpl, config) {
     var engines = {};
     engines['.' + ext] = adaro[ext]();
     return new View(tmpl, {
-        root: ext == 'js' ? path.resolve(__dirname, 'fixtures/.build') : path.resolve(__dirname, 'fixtures/templates'),
+        root: config.root ? config.root : ext == 'js' ? path.resolve(__dirname, 'fixtures/.build') : path.resolve(__dirname, 'fixtures/templates'),
         defaultEngine: '.' + ext,
         engines: engines
     });
