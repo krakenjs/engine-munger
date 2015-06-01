@@ -7,7 +7,6 @@ var path = require('path');
 var adaro = require('adaro');
 
 test('engine-munger', function (t) {
-    var settings = {cache: false};
 
     t.test('when no specialization or internationalization enabled for js engine', function (t) {
         makeView('js', 'test', {}).render({}, function(err, data) {
