@@ -182,13 +182,8 @@ test('engine-munger', function (t) {
     });
 
 
-    t.test('i18n dust engine- catch error while compiling invalid dust and report name of broken template', function(err, data) {
+    t.test('dust engine - catch error while compiling invalid dust and report name of broken template', function(t) {
         var config = {
-            i18n: {
-                fallback: 'en-US',
-                formatPath: krakenFormatPath,
-                contentPath: 'test/fixtures/properties'
-            }
         };
 
         var context = {
