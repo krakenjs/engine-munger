@@ -1,7 +1,7 @@
 {
   "name": "engine-munger",
   "version": "1.0.0-2",
-  "description": "An engine munger for express apps.",
+  "description": "A replacement Express view class that provides asynchronous resolution, internationalization and specialization support",
   "main": "index.js",
   "author": {
     "name": "Poornima Venkatakrishnan",
