@@ -198,6 +198,18 @@ test('engine-munger', function (t) {
 
     });
 
+    t.test('early lookupMain and cached behavior', function (t) {
+        var view = makeView('js', 'test', {});
+        view.lookupMain({}, function (err) {
+            t.error(err);
+            t.equal(view.path, path.resolve(__dirname, 'fixtures', '.build', 'test.js'));
+            view.lookupMain({}, function(err) {
+                t.error(err);
+                t.end();
+            });
+        });
+    });
+
 });
 
 function makeView(ext, tmpl, config) {
