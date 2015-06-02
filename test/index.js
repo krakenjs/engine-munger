@@ -246,7 +246,7 @@ test('engine-munger', function (t) {
         var pending = 0;
         for (var i = 0; i < 11; i++) {
             pending++;
-            view.lookup('test', {}, function (err) {
+            view.lookup('test.dust', {}, function (err) {
                 t.error(err);
                 if (--pending === 0) {
                     t.end();
@@ -263,6 +263,8 @@ function makeView(ext, tmpl, config) {
     var View = makeViewClass(viewConf);
     var engines = {};
     engines['.' + ext] = adaro[ext]();
+    tmpl += '.' + ext;
+
     return new View(tmpl, {
         root: config.root ? config.root : ext == 'js' ? path.resolve(__dirname, 'fixtures/.build') : path.resolve(__dirname, 'fixtures/templates'),
         defaultEngine: '.' + ext,

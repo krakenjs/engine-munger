@@ -25,6 +25,7 @@ var karka = require('karka');
 var aproba = require('aproba');
 var bcp47 = require('bcp47');
 var bcp47stringify = require('bcp47-stringify');
+var VError = require('verror');
 
 /**
  * Make a View class that uses our configuration, set far in advance of
@@ -79,6 +80,8 @@ function makeViewClass(config) {
 
         debug('lookup "%s"', name);
 
+        var view = this;
+
         permutron.raw(search, function (candidate, next) {
             var resolved = path.resolve.apply(null, candidate);
             limitStat(resolved, function (err, stat) {
@@ -91,7 +94,16 @@ function makeViewClass(config) {
                     cb(err);
                 }
             });
-        }, cb);
+        }, function (err) {
+            if (err) {
+                cb(err);
+            } else {
+                var dirs = Array.isArray(view.root) && view.root.length > 1 ? 'directories "' + view.root.slice(0, -1).join('", "') + '" or "' + view.root[view.root.length - 1] + '"' : 'directory "' + view.root + '"';
+                var viewError = new VError('Failed to lookup view "%s" in views %s', name, dirs);
+                viewError.view = view;
+                cb(viewError);
+            }
+        });
     };
 
     /**
@@ -128,11 +140,6 @@ function makeViewClass(config) {
         this.lookup(name, options, function (err, path) {
             if (err) {
                 return cb(err);
-            } else if (!path) {
-                var dirs = Array.isArray(view.root) && view.root.length > 1 ? 'directories "' + view.root.slice(0, -1).join('", "') + '" or "' + view.root[view.root.length - 1] + '"' : 'directory "' + view.root + '"';
-                var viewError = new Error('Failed to lookup view "' + name + '" in views ' + dirs);
-                viewError.view = view;
-                return cb(viewError);
             } else {
                 view.path = path;
                 cb();
