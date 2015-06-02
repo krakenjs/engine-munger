@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 for tmpl in $( (cd test/fixtures/templates; find . -type f | grep -v invalid | sed -e 's@[.]/@@; s@.dust@@') ); do
     for lang in US/es US/en; do
         echo $lang $tmpl

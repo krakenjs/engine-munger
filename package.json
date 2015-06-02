@@ -25,21 +25,23 @@
     "file-resolver": "^1.0.0",
     "graceful-fs": "~2.0.1",
     "karka": "~0.0.1",
-    "localizr": "^1.0.0",
     "permutron": "^1.3.1",
     "verror": "^1.6.0"
   },
   "devDependencies": {
     "adaro": "1.0.0-9",
+    "dustjs-linkedin": "^2.7.1",
     "freshy": "0.0.2",
     "jshint": "~2.4.3",
+    "localizr": "^1.1.0",
     "nyc": "^2.0.5",
     "tap": "^1.0.8"
   },
   "scripts": {
     "test": "nyc tap test/*.js && npm run lint",
     "cover": "nyc report",
-    "lint": "jshint -c .jshintrc index.js"
+    "lint": "jshint -c .jshintrc index.js",
+    "regenerate-test-data": "./test/fixtures/compile-test-data.sh"
   },
   "bugs": {
     "url": "https://github.com/krakenjs/engine-munger/issues"
