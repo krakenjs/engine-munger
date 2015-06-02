@@ -29,7 +29,7 @@
     "verror": "^1.6.0"
   },
   "devDependencies": {
-    "adaro": "1.0.0-9",
+    "adaro": "1.0.0-10",
     "dustjs-linkedin": "^2.7.1",
     "freshy": "0.0.2",
     "jshint": "~2.4.3",
