@@ -1,88 +1,93 @@
-engine-munger 
+engine-munger
 =============
 
-Lead Maintainer: [Aria Stewart](https://github.com/aredridel)  
+A replacement Express view class that provides asynchronous resolution, allows
+engines to use the lookup method to locate partials, and extends the lookup
+method to be configurable based on i18n locale and a template specialization
+rule map.
+
+This is a backport of [work for Express 5](https://github.com/strongloop/express/pull/2653)
+
+Lead Maintainer: [Aria Stewart](https://github.com/aredridel)
 
 [![Build Status](https://travis-ci.org/krakenjs/engine-munger.svg?branch=master)](https://travis-ci.org/krakenjs/engine-munger)
 
-A template engine munging library.
-It looks for appropriate template consolidation library for specified view engine and includes i18n and specialization in the workflow.
+What does i18n mean?
+--------------------
 
-Note: If you use specialization features, you must use dustjs before 2.6.0.
+i18n means "internationalization". Given a `locale` property in the render options, `engine-munger` will look for content in a locale-specific directory (or in a fallback locale if that is not a match) for templates and partials. This is particularly useful with template engines that pre-localize their compiled forms, such as with [`localizr`](https://github.com/krakenjs/localizr) and [`dustjs-linkedin`](http://dustjs.com/) together.
 
-###### What does i18n mean ?
-Localization of included content tags for a specified locale. Currently supported only for dust templating engine and internally uses the module [localizr](https://github.com/krakenjs/localizr) for translating content tags included in the templates
+What does specialization mean?
+------------------------------
 
-###### What does specialization mean ?
-Ability to switch a specific template with another based on a rule set specified in the app config. The actual rule parsing is done using the module [karka](https://github.com/krakenjs/karka) and can be extended and used in any templating engine and not dust.
+Ability to switch a specific template with another based on a rule set specified in the app config. The actual rule parsing is done using the module [`karka`](https://github.com/krakenjs/karka).
+
 All engine-munger does is includes a specialization map with the list of key value pairs using the karka module.
+
 ```javascript
 {
-    _specialization : {
-        ...
-        originalTemplate : <mappedTemplate>
-        ...
+    specialization : {
+        'jekyll': [
+            {
+                is: 'hyde',
+                when: {
+                    'whoAmI': 'badGuy'
+                }
+            }
+        ]
     }
 }
 ```
 
-##### Currently supported template engines out of the box:
+The above will switch the template from `jekyll` to `hyde` if the render options contain `"whoAmI": "badGuy"`. Rules can be as complex as you need for your application and are particularly good for running A/B tests.
 
-* Dust: Engine types 'js' and 'dust'
+Using engine-munger in an application
+=====================================
 
-
-Simple Usage:
+This example uses the [`adaro`](https://github.com/krakenjs/adaro) template engine, which wraps dust up as an express view engine, and uses engine-munger's more sophisticated lookup method to find partials, allowing them to be localized and specialized based on the render options.
 
 ```javascript
-var engine-munger = require('engine-munger'),
-    app = require('express')();
+var munger = require('engine-munger');
+var adaro = require('adaro');
+var app = require('express')();
 
-app.engine('dust', engine-munger['dust'](settings, config));
-app.engine('js', engine-munger['js'](settings, config));
+var specialization = {
+    'jekyll': [
+        {
+            is: 'hyde',
+            when: {
+                'whoAmI': 'badGuy'
+            }
+        }
+    ]
+};
+app.set("view", munger.makeViewClass({
+    "dust": {
+        specialization: specialization
+    },
+    "js": {
+        specialization: specialization,
+        i18n: {
+            fallback: 'en-US',
+            contentPath: 'locales'
+        }
+    }
+});
+
+var engineConfig = {}; // Configuration for your view engine
+
+app.engine('dust', adaro.dust(engineConfig));
+app.engine('js', adaro.js(engineConfig));
 ```
-
-* settings : [JSON] Arguments you want passed to the templating engine,
-* config: [JSON] used to specify whether you need i18n/specialization enabled. It also compulsarily requires the 'view' and 'view engine' settings passed into express app.
-
- If you are using kraken-js 1.0 along with engine-munger, the kraken generator will automatically set this all up for you.
- But if you want to use this with a stand alone express app with dust as templating engine, you can specify as follows:
-
- Example params:
-
- ```javascript
- var settings  = {cache: false},
-     config = {
-         'views': 'public/templates',
-         'view engine': 'dust',
-         'i18n': {
-             'fallback': 'en-US',
-             'contentPath': 'locales'
-         },
-         specialization: {
-             'jekyll': [
-                 {
-                     is: 'hyde',
-                     when: {
-                         'whoAmI': 'badGuy'
-                     }
-                 }
-             ]
-
-         }
-     };
- ```
 
 Running Tests:
 
-```
-To run tests:
-$ npm test
-
-To run coverage
-$ npm run-script cover
-
-To run lint
-$ npm run-script lint
+```shell
+npm test
 ```
 
+To run coverage:
 
+```shell
+npm run cover
+```

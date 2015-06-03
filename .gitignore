@@ -2,3 +2,7 @@
 node_modules/
 coverage/
 npm-debug.log
+*.swp
+test/fixtures/tmp/
+.nyc_output/
+tags

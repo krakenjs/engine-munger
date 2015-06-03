@@ -15,51 +15,205 @@
  │   See the License for the specific language governing permissions and       │
  │   limitations under the License.                                            │
  \*───────────────────────────────────────────────────────────────────────────*/
+"use strict";
+var path = require('path');
+var debug = require('debuglog')('engine-munger');
+var fs = require('fs');
+var permutron = require('permutron');
+var oldView = require('express/lib/view');
+var karka = require('karka');
+var aproba = require('aproba');
+var bcp47 = require('bcp47');
+var bcp47stringify = require('bcp47-stringify');
+var VError = require('verror');
 
-'use strict';
-var engine = require('adaro'),
-    munger = require('./lib/munger');
+/**
+ * Make a View class that uses our configuration, set far in advance of
+ * instantiation because Express passes very little to the actual constructor.
+ */
+function makeViewClass(config) {
+    aproba('O', arguments);
 
+    var conf = normalizeConfigs(config);
 
-exports.dust = function (setting, config) {
-    var settings =  (arguments.length > 1) ? setting : {},
-        configs = (arguments.length > 1) ? config : setting,
-        renderer;
+    var proto = Object.create(oldView.prototype);
 
-    if (!configs || !(configs.specialization || configs.i18n)) {
-        return engine.dust(settings);
+    // Unfortunately, since we don't know the actual file to resolve until
+    // we get request context (in `render`), we can't say whether it exists or not.
+    //
+    // Express checks that this is truthy to see if it should return an error or
+    // run the render, so we hard code it to true.
+    proto.path = true;
+
+    proto.lookup = function lookup(name, options, cb) {
+        if (arguments.length === 1) {
+            // This is the unoverriden constructor calling us. Ignore the call.
+            return true;
+        }
+
+        var ext = path.extname(name);
+
+        if (conf[ext] && conf[ext].specialization) {
+            var nameNoExt = name.slice(0, -ext.length);
+            var newName = conf[ext].specialization.resolve(nameNoExt, options) + ext;
+            debug("specialization mapped '%s' to '%s'", name, newName);
+            name = newName;
+        }
+
+        var search = [];
+        search.push([].concat(conf[ext] && conf[ext].root ? conf[ext].root : this.root));
+
+        if (conf[ext] && conf[ext].i18n) {
+            var i18n = conf[ext].i18n;
+            var locales = [];
+            if (options.locale) {
+                locales.push(i18n.formatPath(typeof options.locale === 'object' ? options.locale : bcp47.parse(options.locale.replace(/_/g, '-'))));
+            }
+            if (i18n.fallback) {
+                locales.push(i18n.formatPath(i18n.fallback));
+            }
+            debug("trying locales %j", locales);
+            search.push(locales);
+        }
+
+        search.push([name, path.join(path.basename(name), 'index' + ext)]);
+
+        debug('lookup "%s"', name);
+
+        var view = this;
+
+        permutron.raw(search, function (candidate, next) {
+            var resolved = path.resolve.apply(null, candidate);
+            limitStat(resolved, function (err, stat) {
+                if (!err && stat.isFile()) {
+                    debug('found "%s"', resolved);
+                    cb(null, resolved);
+                } else if ((!err && stat.isDirectory()) || (err && err.code === 'ENOENT')) {
+                    next();
+                } else {
+                    cb(err);
+                }
+            });
+        }, function (err) {
+            if (err) {
+                cb(err);
+            } else {
+                var dirs = Array.isArray(view.root) && view.root.length > 1 ? 'directories "' + view.root.slice(0, -1).join('", "') + '" or "' + view.root[view.root.length - 1] + '"' : 'directory "' + view.root + '"';
+                var viewError = new VError('Failed to lookup view "%s" in views %s', name, dirs);
+                viewError.view = view;
+                cb(viewError);
+            }
+        });
+    };
+
+    /**
+     * Render with the given `options` and callback `fn(err, str)`.
+     *
+     * @param {Object} options
+     * @param {Function} fn
+     * @api private
+     */
+    proto.render = function render(options, fn) {
+        aproba('OF', arguments);
+        var view = this;
+        view.lookupMain(options, function (err) {
+            if (err) {
+                fn(err);
+            } else {
+                debug('render "%s"', view.path);
+                view.engine(view.path, options, fn);
+            }
+        });
+    };
+
+    /** Resolve the main template for this view
+     *
+     * @param {function} cb
+     * @private
+     */
+    proto.lookupMain = function lookupMain(options, cb) {
+        if (this.path && this.path !== true) {
+            return cb();
+        }
+        var view = this;
+        var name = path.extname(this.name) === this.ext ? this.name : this.name + this.ext;
+        this.lookup(name, options, function (err, path) {
+            if (err) {
+                return cb(err);
+            } else {
+                view.path = path;
+                cb();
+            }
+        });
+    };
+
+    function View(name, options) {
+        oldView.call(this, name, options);
     }
 
-    if (configs['view engine'] === 'dust') {
-        munger.wrapDustOnLoad('dust', configs, settings.cache);
+    View.prototype = proto;
+    View.prototype.constructor = View;
+    return View;
+}
+
+module.exports = makeViewClass;
+
+/**
+ * an fs.stat call that limits the number of outstanding requests to 10.
+ *
+ * @param {String} path
+ * @param {Function} cb
+ */
+var pendingStats = [];
+var numPendingStats = 0;
+
+function limitStat(path, cb) {
+    debug('stat "%s"', path);
+    if (++numPendingStats > 10) {
+        pendingStats.push([path, cb]);
+    } else {
+        fs.stat(path, dequeue(cb));
     }
 
-    // Disabling cache
-    // since we add our own caching layer below. (Clone it first so we don't muck with the original object.)
-    settings.cache = false;
+    function dequeue(cb) {
+        return function (err, stat) {
+            cb(err, stat);
+            var next = pendingStats.shift();
+            if (next) {
+                fs.stat(next[0], dequeue(next[1]));
+            } else {
+                numPendingStats--;
+            }
+        };
+    }
+}
 
-    // For i18n we silently switch to the JS engine for all requests, passing config
-    renderer = configs.i18n ? engine.js(settings): engine.dust(settings);
-    return munger.wrapEngine(configs, renderer);
-};
-
-exports.js = function (setting, config) {
-    var settings =  (arguments.length > 1) ? setting : {},
-        configs = (arguments.length > 1) ? config : setting,
-        renderer;
-
-    if (!configs || !(configs.specialization || configs.i18n)) {
-        return engine.js(settings);
+function normalizeConfigs(config) {
+    var out = {};
+    for (var ext in config) {
+        if (ext[0] === '.') {
+            out[ext] = normalizeConfig(config[ext]);
+        } else {
+            out['.' + ext] = normalizeConfig(config[ext]);
+        }
     }
 
-    if (configs['view engine'] === 'js') {
-        munger.wrapDustOnLoad('js', configs, settings.cache);
+    return out;
+}
+
+function normalizeConfig(config) {
+    var out = {};
+    if (config.i18n) {
+        out.i18n = {
+            fallback: config.i18n.fallback && bcp47.parse(config.i18n.fallback.replace(/_/g, '-')),
+            formatPath: config.i18n.formatPath || bcp47stringify,
+            contentPath: config.i18n.contentPath
+        };
     }
 
-    // Disabling cache
-    // since we add our own caching layer below. (Clone it first so we don't muck with the original object.)
-    settings.cache = false;
-    renderer = engine.js(settings);
-    return (configs.specialization) ? munger.wrapEngine(configs, renderer) : renderer;
-};
+    if (config.specialization) {
+        out.specialization = karka.create(config.specialization);
+    }
 
+    return out;
+}
