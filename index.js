@@ -61,7 +61,10 @@ function makeViewClass(config) {
         }
 
         var search = [];
-        search.push([].concat(conf[ext] && conf[ext].root ? conf[ext].root : this.root));
+
+        var paths = [].concat(conf[ext] && conf[ext].root ? conf[ext].root : this.root);
+
+        search.push(paths);
 
         if (conf[ext] && conf[ext].i18n) {
             var i18n = conf[ext].i18n;
@@ -98,8 +101,8 @@ function makeViewClass(config) {
             if (err) {
                 cb(err);
             } else {
-                var dirs = Array.isArray(view.root) && view.root.length > 1 ? 'directories "' + view.root.slice(0, -1).join('", "') + '" or "' + view.root[view.root.length - 1] + '"' : 'directory "' + view.root + '"';
-                var viewError = new VError('Failed to lookup view "%s" in views %s', name, dirs);
+                var dirs = paths.length > 1 ? 'directories "' + paths.slice(0, -1).join('", "') + '" or "' + paths[paths.length - 1] + '"' : 'directory "' + paths[0] + '"';
+                var viewError = new VError('Failed to lookup view "%s" in %s', name, dirs);
                 viewError.view = view;
                 cb(viewError);
             }
