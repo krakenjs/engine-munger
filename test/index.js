@@ -1,6 +1,5 @@
 'use strict';
 var test = require('tap').test;
-var freshy = require('freshy');
 var makeViewClass = require('../');
 var path = require('path');
 var adaro = require('adaro');
