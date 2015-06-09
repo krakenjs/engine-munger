@@ -209,13 +209,16 @@ function normalizeConfig(config) {
     if (config.i18n) {
         out.i18n = {
             fallback: config.i18n.fallback && bcp47.parse(config.i18n.fallback.replace(/_/g, '-')),
-            formatPath: config.i18n.formatPath || bcp47stringify,
-            contentPath: config.i18n.contentPath
+            formatPath: config.i18n.formatPath || bcp47stringify
         };
     }
 
     if (config.specialization) {
         out.specialization = karka.create(config.specialization);
+    }
+
+    if (config.root) {
+        out.root = config.root;
     }
 
     return out;
