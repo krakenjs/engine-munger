@@ -61,7 +61,7 @@ var specialization = {
         }
     ]
 };
-app.set("view", munger.makeViewClass({
+app.set("view", munger({
     "dust": {
         specialization: specialization
     },
