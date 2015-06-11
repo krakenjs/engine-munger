@@ -30,7 +30,7 @@
     "freshy": "0.0.2"
   },
   "peerDependencies": {
-    "dustjs-linkedin": "^2.0.0",
+    "dustjs-linkedin": ">= 2.0.0 < 2.7.0",
     "adaro": "~0.1.5"
   },
   "scripts": {
