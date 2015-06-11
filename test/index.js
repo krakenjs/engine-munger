@@ -173,7 +173,7 @@ test('engine-munger', function (t) {
             }
         };
         makeView('js', 'peekaboo', config).render({}, function(err, data) {
-            t.match(err.message, /Failed to lookup view "peekaboo.js" in views directory/);
+            t.match(err.message, /Failed to lookup view "peekaboo.js" in directory/);
             t.equal(data, undefined);
             t.end();
         });
