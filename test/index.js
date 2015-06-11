@@ -254,6 +254,13 @@ test('engine-munger', function (t) {
         }
     });
 
+    t.test('lookup in a submodule', function (t) {
+        var view = makeView('dust', 'test', { });
+        view.lookup('module:test-package-templates/test.dust', {}, function (err) {
+            t.error(err);
+            t.end();
+        });
+    });
 });
 
 function makeView(ext, tmpl, config) {
