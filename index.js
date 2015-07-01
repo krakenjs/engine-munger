@@ -26,6 +26,7 @@ var aproba = require('aproba');
 var bcp47 = require('bcp47');
 var bcp47stringify = require('bcp47-stringify');
 var VError = require('verror');
+var resolve = require('resolve');
 
 /**
  * Make a View class that uses our configuration, set far in advance of
@@ -62,21 +63,14 @@ function makeViewClass(config) {
 
         var search = [];
 
-        var paths = [].concat(conf[ext] && conf[ext].root ? conf[ext].root : this.root);
+        var paths = modulePath(name) || [].concat(conf[ext] && conf[ext].root ? conf[ext].root : this.root);
+
+        name = filterModuleName(name);
 
         search.push(paths);
 
         if (conf[ext] && conf[ext].i18n) {
-            var i18n = conf[ext].i18n;
-            var locales = [];
-            if (options.locale) {
-                locales.push(i18n.formatPath(typeof options.locale === 'object' ? options.locale : bcp47.parse(options.locale.replace(/_/g, '-'))));
-            }
-            if (i18n.fallback) {
-                locales.push(i18n.formatPath(i18n.fallback));
-            }
-            debug("trying locales %j", locales);
-            search.push(locales);
+            search.push(getLocales(options, conf[ext].i18n));
         }
 
         search.push([name, path.join(path.basename(name), 'index' + ext)]);
@@ -107,6 +101,18 @@ function makeViewClass(config) {
                 cb(viewError);
             }
         });
+
+        function getLocales(options, i18n) {
+            var locales = [];
+            if (options.locale) {
+                locales.push(i18n.formatPath(typeof options.locale === 'object' ? options.locale : bcp47.parse(options.locale.replace(/_/g, '-'))));
+            }
+            if (i18n.fallback) {
+                locales.push(i18n.formatPath(i18n.fallback));
+            }
+            debug("trying locales %j", locales);
+            return locales;
+        }
     };
 
     /**
@@ -222,4 +228,29 @@ function normalizeConfig(config) {
     }
 
     return out;
+}
+
+var moduleRegexp = /^module:([^/]*)[/](.*)/;
+
+function modulePath(name) {
+    var m = moduleRegexp.exec(name);
+    if (m) {
+        return function (n, context, next) {
+            resolve(m[1] + '/package.json', function (err, resolved) {
+                debug("resolved module path '%s'", path.dirname(resolved));
+                next(err, { value: path.dirname(resolved), done: true});
+            });
+        };
+    } else {
+        return null;
+    }
+}
+
+function filterModuleName(name) {
+    var m = moduleRegexp.exec(name);
+    if (m) {
+        return m[2];
+    } else {
+        return name;
+    }
 }

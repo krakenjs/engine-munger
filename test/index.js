@@ -254,16 +254,46 @@ test('engine-munger', function (t) {
         }
     });
 
+    t.test('lookup in a submodule', function (t) {
+        var view = makeView('dust', 'test', { });
+        view.lookup('module:test-package-templates/test.dust', {}, function (err) {
+            t.error(err);
+            t.end();
+        });
+    });
 });
 
 function makeView(ext, tmpl, config) {
+    // This function wraps the tricky business of instantiating an Express View.
+    // It's got a constrained and strange interface because it comes from the
+    // private internals of Express.
+    //
+    // The interface to the constructor is so constrained that configuration has
+    // to happen before that -- so we actually make a class dynamically whose
+    // instances come pre-configured.
+
     var viewConf = {};
+
+    // The full configuration is a map of extension -> configuration, so
+    // configuration can vary by file type. We simplify that to a single
+    // extension for the tests.
     viewConf[ext] = config;
     var View = makeViewClass(viewConf);
     var engines = {};
+
+    // Inside express, the View class gets a reference to the configured
+    // view engines. Not how I would have factored it, but it works. We
+    // emulate that here with just adaro.
     engines['.' + ext] = adaro[ext]();
+
+    // The assumption is also that the view filename is qualified with the
+    // extension. This simplifies the guts a lot since ext isn't passed in
+    // different places at different times.
     tmpl += '.' + ext;
 
+    // So then we return an instance of the View itself, as Express would
+    // do internally in normal use. The keys passed are the only ones
+    // Express will pass, hence the need for configuration above.
     return new View(tmpl, {
         root: config.root ? config.root : ext == 'js' ? path.resolve(__dirname, 'fixtures/.build') : path.resolve(__dirname, 'fixtures/templates'),
         defaultEngine: '.' + ext,
