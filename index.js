@@ -188,10 +188,9 @@ function limitStat(path, cb) {
         return function (err, stat) {
             cb(err, stat);
             var next = pendingStats.shift();
+            numPendingStats--;
             if (next) {
                 fs.stat(next[0], dequeue(next[1]));
-            } else {
-                numPendingStats--;
             }
         };
     }
