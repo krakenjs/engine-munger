@@ -30,7 +30,7 @@
     "verror": "^1.6.0"
   },
   "devDependencies": {
-    "adaro": "1.0.0-10",
+    "adaro": "^1.0.0",
     "dustjs-linkedin": "^2.7.1",
     "jshint": "~2.4.3",
     "localizr": "^1.1.0",
