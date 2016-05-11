@@ -40,7 +40,7 @@ exports.create = function (config) {
         global = context.global;
         locals = context.get('context');
         locality = util.localityFromLocals(locals);
-        props = res.resolve(name, locality).file || i18n.contentPath;
+        props = res.resolve(name, locality).file;
 
         options = {
             src: path.join(config.views, name + '.dust'),
