@@ -1,5 +1,4 @@
-engine-munger
-=============
+# engine-munger
 
 A replacement Express view class that provides asynchronous resolution, allows
 engines to use the lookup method to locate partials, and extends the lookup
@@ -7,8 +6,6 @@ method to be configurable based on i18n locale and a template specialization
 rule map.
 
 This is a backport of [work for Express 5](https://github.com/strongloop/express/pull/2653)
-
-Lead Maintainer: [Aria Stewart](https://github.com/aredridel)
 
 [![Build Status](https://travis-ci.org/krakenjs/engine-munger.svg?branch=master)](https://travis-ci.org/krakenjs/engine-munger)
 
